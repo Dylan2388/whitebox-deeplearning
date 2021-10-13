@@ -1,0 +1,8 @@
+requests
+gdown
+numpy
+pandas
+# opencv
+tqdm
+scipy
+matplotlib
