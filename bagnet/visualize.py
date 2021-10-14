@@ -49,7 +49,7 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, args:
                 x_tensor = transforms.ToTensor()(x).unsqueeze_(0) #shape (h, w)
                 img_patch = x_tensor[0,:,patch_idx[0]*8:min(224,patch_idx[0]*8+patchsize),patch_idx[1]*8:min(224,patch_idx[1]*8+patchsize)] 
                 img_patch = transforms.ToPILImage()(img_patch)
-                img_patch.save(os.path.join(near_imgs_dir, '%s_%s.png'%(str(pn.split('Scene')[-1].split('.png')[0]),str(f"{similarity:.3f}"))))
+                img_patch.save(os.path.join(near_imgs_dir, '%s_%s.png'%(str(pn.split('/')[-1].split('.png')[0]),str(f"{similarity:.3f}"))))
 
 
 # given a certain patch, find patches in the dataset which are similar (in this case: cosine similarity > 0.9)
@@ -86,7 +86,7 @@ def find_similar(current_patch, model, test_loader: DataLoader, device, args: ar
             if max_sim > sim_threshold:
                 nearest_patches.append((i[0], nearest_patch_idx,max_sim.item()))
         else:
-            dist = get_euclidean_distances(current_patch, img_enc)
+            dist = get_euclidean_distances(current_patch.unsqueeze(0), img_enc)
             min_dist_h, min_dist_h_idxs = torch.min(dist, dim=0)
             min_dist, min_dist_w_idx = torch.min(min_dist_h, dim=0)
             nearest_patch_idx = (min_dist_h_idxs[min_dist_w_idx].item(), min_dist_w_idx.item())

@@ -105,9 +105,6 @@ def bagnet_process(skip_training=False, visualize=False):
             if os.path.isfile(model_path):
                 load_model(bagnet, model_path, device)
                 print ("Load Model BagNet Successfully")
-            # if os.path.isfile("/content/drive/MyDrive/Twente Uni/Capita Selecta/BagNet/unsupervised_layer.pth"):
-            #   load_model(unsupervised_layer, "/content/drive/MyDrive/Twente Uni/Capita Selecta/BagNet/unsupervised_layer.pth", device)
-            #   print ("Load Model Unsupervised Layer Successfully")
 
             # print epoch info
             c = 0
@@ -120,13 +117,11 @@ def bagnet_process(skip_training=False, visualize=False):
                 images = images.to(device)
                 # labels = labels.to(device)
                 output = bagnet(images)
-                # output = unsupervised_layer(output)
                 loss, dist_pc_pn, dist_pc_pf = patch_triplet_loss(output, 8, 4, 4)
                 
                 # backward
                 optimizer_bagnet.zero_grad()
                 loss.backward()
-                # optimizer_unsupervised_layer.step()
                 optimizer_bagnet.step()
 
                 ## Print progress
@@ -136,8 +131,8 @@ def bagnet_process(skip_training=False, visualize=False):
                     p_old = p_new
                     c += 1
             save_model(bagnet, model_path, confirm=False)
-            # save_model(unsupervised_layer, "/content/drive/MyDrive/Twente Uni/Capita Selecta/BagNet/unsupervised_layer.pth", confirm=False)
-
+            
+            
     if visualize:
         load_model(bagnet, model_path, device)
         folder_name = "visualize"
