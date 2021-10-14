@@ -98,7 +98,7 @@ def training_process():
 
     # current directory
     directory = os.path.abspath(os.getcwd())
-    model_path = os.path.join(directory, "bagnet/bagnet33.pth")
+    model_path = os.path.join(directory, "bagnet/model/bagnet33.pth")
     
     for i in range(0, epoch_num):
 
