@@ -42,7 +42,7 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, args:
             if p >= img_enc.shape[0]:
                 p = p - img_enc.shape[0]
             
-            nearest_patches = find_similar(img_enc[p,:,selection[0],selection[1]].unsqueeze_(1).unsqueeze_(2), model, test_loader, device, args, use_cosine=True)
+            nearest_patches = find_similar(img_enc[p,:,selection[0],selection[1]].unsqueeze_(1).unsqueeze_(2), model, test_loader, device, args, use_cosine=False)
             
             for (pn, patch_idx, similarity) in nearest_patches:
                 x = Image.open(pn).resize((224,224)) #TODO make non hard coded
