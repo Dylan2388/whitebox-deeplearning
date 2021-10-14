@@ -41,12 +41,12 @@ def load_model(model, filename, device):
     model.load_state_dict(torch.load(filename, map_location=lambda storage, loc: storage))
     print('Model loaded from %s.' % filename)
     model.to(device)
-    model.eval()
+    # model.eval()
 
 #########################
 
 
-def training_process():
+def bagnet_process(skip_training=False, visualize=False):
 
     all_args = get_args()
 
@@ -89,7 +89,6 @@ def training_process():
     lr = 0.01
     epoch_num = 10
     
-    # class instance
     optimizer_bagnet = optim.Adam(bagnet.parameters(), lr=lr)
     # freeze param
     for name, param in bagnet.named_parameters():
@@ -100,43 +99,51 @@ def training_process():
     directory = os.path.abspath(os.getcwd())
     model_path = os.path.join(directory, "bagnet/model/bagnet33.pth")
     
-    for i in range(0, epoch_num):
+    if not skip_training:
+        for i in range(0, epoch_num):
 
-        if os.path.isfile(model_path):
-            load_model(bagnet, model_path, device)
-            print ("Load Model BagNet Successfully")
-        # if os.path.isfile("/content/drive/MyDrive/Twente Uni/Capita Selecta/BagNet/unsupervised_layer.pth"):
-        #   load_model(unsupervised_layer, "/content/drive/MyDrive/Twente Uni/Capita Selecta/BagNet/unsupervised_layer.pth", device)
-        #   print ("Load Model Unsupervised Layer Successfully")
+            if os.path.isfile(model_path):
+                load_model(bagnet, model_path, device)
+                print ("Load Model BagNet Successfully")
+            # if os.path.isfile("/content/drive/MyDrive/Twente Uni/Capita Selecta/BagNet/unsupervised_layer.pth"):
+            #   load_model(unsupervised_layer, "/content/drive/MyDrive/Twente Uni/Capita Selecta/BagNet/unsupervised_layer.pth", device)
+            #   print ("Load Model Unsupervised Layer Successfully")
 
-        # print epoch info
-        c = 0
-        p_old = 0
-        print("Epoch " + str(i) + ":")
+            # print epoch info
+            c = 0
+            p_old = 0
+            print("Epoch " + str(i) + ":")
 
 
-        for images, labels in trainloader:
-            # forward
-            images = images.to(device)
-            # labels = labels.to(device)
-            output = bagnet(images)
-            # output = unsupervised_layer(output)
-            loss, dist_pc_pn, dist_pc_pf = patch_triplet_loss(output, 8, 4, 4)
-            
-            # backward
-            optimizer_bagnet.zero_grad()
-            loss.backward()
-            # optimizer_unsupervised_layer.step()
-            optimizer_bagnet.step()
+            for images, labels in trainloader:
+                # forward
+                images = images.to(device)
+                # labels = labels.to(device)
+                output = bagnet(images)
+                # output = unsupervised_layer(output)
+                loss, dist_pc_pn, dist_pc_pf = patch_triplet_loss(output, 8, 4, 4)
+                
+                # backward
+                optimizer_bagnet.zero_grad()
+                loss.backward()
+                # optimizer_unsupervised_layer.step()
+                optimizer_bagnet.step()
 
-            ## Print progress
-            p_new = round(c/len(trainloader), 2)
-            if p_old != p_new:
-                print("### Progress: " + str(p_new))
-                p_old = p_new
-                c += 1
-        save_model(bagnet, model_path, confirm=False)
-        # save_model(unsupervised_layer, "/content/drive/MyDrive/Twente Uni/Capita Selecta/BagNet/unsupervised_layer.pth", confirm=False)
-            
+                ## Print progress
+                p_new = round(c/len(trainloader), 2)
+                if p_old != p_new:
+                    print("### Progress: " + str(p_new))
+                    p_old = p_new
+                    c += 1
+            save_model(bagnet, model_path, confirm=False)
+            # save_model(unsupervised_layer, "/content/drive/MyDrive/Twente Uni/Capita Selecta/BagNet/unsupervised_layer.pth", confirm=False)
+
+    if visualize:
+        load_model(bagnet, model_path, device)
+        folder_name = "visualize"
+        show_triplets(bagnet, test_loader, folder_name, device, all_args)
+
+
+
 if __name__ == '__main__':
-    training_process()
+    bagnet_process(skip_training=True, visualize=True)
