@@ -76,8 +76,8 @@ def find_similar(current_patch, model, test_loader: DataLoader, device, args: ar
         with torch.no_grad():
             img_enc = model.forward(img_normalized_tensor)
         
-        img_enc = img_enc.squeeze(0)
         if use_cosine:
+            img_enc = img_enc.squeeze(0)
             # this implements cosine similarity, can be replaced with euclidean distance
             sim = F.cosine_similarity(current_patch,img_enc, dim = 0)
             max_sim_h, max_sim_h_idxs = torch.max(sim, dim=0)
@@ -86,7 +86,7 @@ def find_similar(current_patch, model, test_loader: DataLoader, device, args: ar
             if max_sim > sim_threshold:
                 nearest_patches.append((i[0], nearest_patch_idx,max_sim.item()))
         else:
-            dist = get_euclidean_distances(current_patch.unsqueeze(0), img_enc)
+            dist = get_euclidean_distances(current_patch.unsqueeze(0), img_enc).squeeze()
             min_dist_h, min_dist_h_idxs = torch.min(dist, dim=0)
             min_dist, min_dist_w_idx = torch.min(min_dist_h, dim=0)
             nearest_patch_idx = (min_dist_h_idxs[min_dist_w_idx].item(), min_dist_w_idx.item())
