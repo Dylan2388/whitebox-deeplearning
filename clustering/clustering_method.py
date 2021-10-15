@@ -38,8 +38,11 @@ def clustering(model, dataLoader: DataLoader, device, args: argparse.Namespace, 
         # Perform a forward pass through the network
         img_enc = model.forward(xs)
         # [64, 128, 24, 24]
+        # [64, 1, 24, 24]
         img_shape = img_enc.shape
+
         reshaped_img_enc = torch.empty((img_shape[0]*img_shape[2]*img_shape[3], img_shape[1]), device=device)
+        
         c = 0
         for i in range(img_shape[0]):
             for j in range(img_shape[2]):
@@ -48,7 +51,7 @@ def clustering(model, dataLoader: DataLoader, device, args: argparse.Namespace, 
                     c += 1
 
         cluster_labels = affinity_progapation(reshaped_img_enc)
-        
+
         
 
 

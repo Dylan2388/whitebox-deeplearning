@@ -65,11 +65,13 @@ def find_similar(current_patch, model, test_loader: DataLoader, device, args: ar
                             transforms.ToTensor(),
                             normalize
                         ])
+    ################ Do the same for the clustering process
     for i in imgs:
         img = Image.open(i[0])
         # skip image with 1 channel
         if len(img.getbands()) != 3:
             continue 
+            ####### convert to RGB channel
         img_normalized_tensor = transform_normalize(img).unsqueeze_(0).to(device)
         # print("img normalized tensor: ", img_normalized_tensor.shape, img_normalized_tensor[0,:,:,:].shape)
         # Perform a forward pass through the network
