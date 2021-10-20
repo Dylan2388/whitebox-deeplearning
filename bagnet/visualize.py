@@ -31,18 +31,18 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, args:
         # Perform a forward pass through the network
         img_enc = model.forward(xs)
 
-        for p in range(5):
+        for p in range(20):
             near_imgs_dir = os.path.join(dir, str(p))
             if not os.path.exists(near_imgs_dir):
                 os.makedirs(near_imgs_dir)
             else:
                 shutil.rmtree(near_imgs_dir)
                 os.makedirs(near_imgs_dir)
-            selection = torch.randint(low=0,high=img_enc.shape[2],size=(2,))
+            selection = torch.randint(low=5,high=img_enc.shape[2]-5,size=(2,))
             if p >= img_enc.shape[0]:
                 p = p - img_enc.shape[0]
             
-            nearest_patches = find_similar(img_enc[p,:,selection[0],selection[1]].unsqueeze_(1).unsqueeze_(2), model, test_loader, device, args, use_cosine=False)
+            nearest_patches = find_similar(img_enc[p,:,selection[0],selection[1]].unsqueeze_(1).unsqueeze_(2), model, test_loader, device, args, use_cosine=True)
             
             for (pn, patch_idx, similarity) in nearest_patches:
                 x = Image.open(pn).resize((224,224)) #TODO make non hard coded
