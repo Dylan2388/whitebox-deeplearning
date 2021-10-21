@@ -20,6 +20,7 @@ from util.args import get_args, save_args, get_optimizer
 from bagnet.bagnet import bagnet33
 from bagnet.loss import patch_triplet_loss
 from bagnet.visualize import show_triplets
+from clustering.clustering_method import clustering
 
 ############################
 
@@ -46,7 +47,7 @@ def load_model(model, filename, device):
 #########################
 
 
-def bagnet_process(skip_training=False, visualize=False):
+def bagnet_process(skip_training=False, visualize=False, cluster=True):
 
     all_args = get_args()
 
@@ -82,7 +83,6 @@ def bagnet_process(skip_training=False, visualize=False):
     bagnet = bagnet33(device, pretrained=True)
     # unsupervised_layer = get_network(128, 'bagnet33', False)
     bagnet.to(device)
-
 
     # YOUR CODE HERE
     # parameters
@@ -135,10 +135,22 @@ def bagnet_process(skip_training=False, visualize=False):
             
     if visualize:
         load_model(bagnet, model_path, device)
-        folder_name = "visualize"
-        show_triplets(bagnet, test_loader, folder_name, device, all_args)
+        use_cosine = True
+        if use_cosine:
+            folder_name = "visualize_cosine"
+        else:
+            folder_name = "visualize_euclidean"
+        show_triplets(bagnet, test_loader, folder_name, device, use_cosine, all_args)
+
+    if cluster:
+        load_model(bagnet, model_path, device)
+        folder_name = "visualize_clustering"
+        cluster_method = 2
+        clustering(bagnet, test_loader, folder_name, device, all_args, cluster_method)
+
+
 
 
 
 if __name__ == '__main__':
-    bagnet_process(skip_training=True, visualize=True)
+    bagnet_process(skip_training=True, visualize=False, cluster=True)

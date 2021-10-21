@@ -6,7 +6,7 @@ import torchvision.transforms as transforms
 import torch.nn.functional as F
 from PIL import Image
 
-def show_triplets(model, test_loader: DataLoader, foldername: str, device, args: argparse.Namespace):
+def show_triplets(model, test_loader: DataLoader, foldername: str, device, use_cosine: bool, args: argparse.Namespace):
     # TODO make for other networks where step size != 8
     modelname = args.net
 
@@ -26,6 +26,7 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, args:
     with torch.no_grad():
         # Get a batch of data
         xs, ys = next(iter(test_loader))
+        a = test_loader.dataset
         xs, ys = xs.to(device), ys.to(device)
         
         # Perform a forward pass through the network
@@ -42,7 +43,7 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, args:
             if p >= img_enc.shape[0]:
                 p = p - img_enc.shape[0]
             
-            nearest_patches = find_similar(img_enc[p,:,selection[0],selection[1]].unsqueeze_(1).unsqueeze_(2), model, test_loader, device, args, use_cosine=True)
+            nearest_patches = find_similar(img_enc[p,:,selection[0],selection[1]].unsqueeze_(1).unsqueeze_(2), model, test_loader, device, args, use_cosine)
             
             for (pn, patch_idx, similarity) in nearest_patches:
                 x = Image.open(pn).resize((224,224)) #TODO make non hard coded
@@ -53,7 +54,7 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, args:
 
 
 # given a certain patch, find patches in the dataset which are similar (in this case: cosine similarity > 0.9)
-def find_similar(current_patch, model, test_loader: DataLoader, device, args: argparse.Namespace, use_cosine=False):
+def find_similar(current_patch, model, test_loader: DataLoader, device, args: argparse.Namespace, use_cosine: bool):
     nearest_patches = []
     sim_threshold = 0.9
     imgs = test_loader.dataset.imgs
@@ -70,8 +71,7 @@ def find_similar(current_patch, model, test_loader: DataLoader, device, args: ar
         img = Image.open(i[0])
         # skip image with 1 channel
         if len(img.getbands()) != 3:
-            continue 
-            ####### convert to RGB channel
+            img = img.convert(mode='RGB')
         img_normalized_tensor = transform_normalize(img).unsqueeze_(0).to(device)
         # print("img normalized tensor: ", img_normalized_tensor.shape, img_normalized_tensor[0,:,:,:].shape)
         # Perform a forward pass through the network
