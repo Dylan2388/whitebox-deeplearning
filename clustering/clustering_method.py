@@ -60,13 +60,13 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
             img = img.convert(mode='RGB')
         img_normalized_tensor = transform_normalize(img).unsqueeze_(0).to(device)
 
-
         with torch.no_grad():
             img_enc = model.forward(img_normalized_tensor)
             # [64, 128, 24, 24]
             # [64, 1, 24, 24]
         img_enc = img_enc.squeeze(0)
         img_shape = img_enc.shape
+        img_enc = img_enc.to(torch.device('cpu'))
 
         # img_id = i*24*24 + j*24 + k
         for j in range(img_shape[1]):
