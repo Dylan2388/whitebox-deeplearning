@@ -1,0 +1,34 @@
+	Adding nVidia Cuda Toolkit 10.2 (Patch2)
+Log dir:  ./runs/run_bagnet
+Num classes (k) =  200
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
+# near:  1
+# near:  1
+# near:  35
+# near:  1
+# near:  1
+# near:  722
+# near:  1
+# near:  45
+# near:  1
+# near:  1
+# near:  1
+# near:  91
+# near:  1
+# near:  1
+# near:  31
+# near:  1
+# near:  1
+# near:  74
+# near:  1
+# near:  1
+# near:  2
+# near:  1
+# near:  1
+# near:  1
+# near:  1
+# near:  56
+# near:  1
+# near:  1
+# near:  132
+# near:  1
