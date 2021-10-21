@@ -6,6 +6,9 @@ import argparse
 import torchvision.transforms as transforms
 import torch.nn.functional as F
 from PIL import Image
+import pickle
+import joblib
+import _pickle as cPickle
 from sklearn.cluster import AffinityPropagation, KMeans, MeanShift
 
 # 1. get output from bagnet 128-D vector (patch - cluster by patch)
@@ -16,7 +19,7 @@ from sklearn.cluster import AffinityPropagation, KMeans, MeanShift
 ####### CLUSTER METHOD
 ### 0. Affinity propagation
 
-def clustering(model, dataLoader: DataLoader, foldername: str, device, args: argparse.Namespace, clusterMethod: int):
+def clustering(model, dataLoader: DataLoader, foldername: str, device, args: argparse.Namespace, clusterMethod: int, training: bool, model_path=""):
     modelname = args.net
 
     if 'bagnet' not in modelname: #modelname can be "bagnet33" leading to patchsize = 33
@@ -35,7 +38,7 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs
+    imgs = dataLoader.dataset.imgs[0:10]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -72,56 +75,76 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
                 reshaped_img_enc[c] = img_enc[:,j,k]
                 c += 1
 
-    #### shape [i*24*24]
-    if clusterMethod == 0:
-        cluster_labels = affinity_progapation(reshaped_img_enc)
-    if clusterMethod == 1:
-        cluster_labels = k_mean(reshaped_img_enc)
-    if clusterMethod == 2:
-        cluster_labels = mean_shift(reshaped_img_enc)
 
-    
-    unique, count = np.unique(cluster_labels, return_counts=True)
-
-    ###### create array group
-    groups = [[]] * len(unique)
-
-    for index, value in enumerate(cluster_labels):
-        i = int(int(index) / int(D2*D3))
-        j = int((int(index) % int(D2*D3)) / int(D3))
-        k = int((int(index) % int(D2*D3)) % int(D3))
-        groups[value].append([i, j, k])
-    
-    for i_group, group in enumerate(groups[0:10]):
-        group_dir = os.path.join(dir, str(i_group))
-        if not os.path.exists(group_dir):
-            os.makedirs(group_dir)
-        else:
-            shutil.rmtree(group_dir)
-            os.makedirs(group_dir)
+    ############## Training clustering model
+    if training:
+        #### shape [i*24*24]
+        if clusterMethod == 0:
+            cluster_model = affinity_progapation(reshaped_img_enc)
+            model_name = "affinity_progapation.pkl"
+        if clusterMethod == 1:
+            cluster_model = k_mean(reshaped_img_enc)
+            model_name = "k_mean.pkl"
+        if clusterMethod == 2:
+            cluster_model = mean_shift(reshaped_img_enc)
+            model_name = "mean_shift.pkl"
+        
+        path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
+        if not os.path.exists(path):
+            os.makedirs(path)
+        save_model(cluster_model, os.path.join(path,model_name))
+        return
 
 
-        for item in group:
-            i = item[0]
-            w = item[1]
-            h = item[2]
-            x = Image.open(imgs[i][0]).resize((224,224))
-            x_tensor = transforms.ToTensor()(x).unsqueeze_(0) #shape (h, w)
-            img_patch = x_tensor[0, :, w*8:min(224,w*8+patchsize),h*8:min(224,h*8+patchsize)]
-            img_patch = transforms.ToPILImage()(img_patch)
-            img_patch.save(os.path.join(group_dir, '%s_%s_%s.png'%(str(imgs[i][0].split('/')[-1].split('.png')[0]),str(w),str(h))))
+    ############### Testing clustering model
+    if not training:
+        cluster_model = load_model(model_path)
+        labels = cluster_model.predict(reshaped_img_enc)
+        unique, count = np.unique(labels, return_counts=True)
 
+        groups = [[]] * len(unique)
+
+        for index, value in enumerate(labels):
+            i = int(int(index) / int(D2*D3))
+            j = int((int(index) % int(D2*D3)) / int(D3))
+            k = int((int(index) % int(D2*D3)) % int(D3))
+            groups[value].append([i, j, k])
+        
+        for i_group, group in enumerate(groups[0:10]):
+            group_dir = os.path.join(dir, str(i_group))
+            if not os.path.exists(group_dir):
+                os.makedirs(group_dir)
+            else:
+                shutil.rmtree(group_dir)
+                os.makedirs(group_dir)
+
+            for item in group:
+                i = item[0]
+                w = item[1]
+                h = item[2]
+                x = Image.open(imgs[i][0]).resize((224,224))
+                x_tensor = transforms.ToTensor()(x).unsqueeze_(0) #shape (h, w)
+                img_patch = x_tensor[0, :, w*8:min(224,w*8+patchsize),h*8:min(224,h*8+patchsize)]
+                img_patch = transforms.ToPILImage()(img_patch)
+                img_patch.save(os.path.join(group_dir, '%s_%s_%s.png'%(str(imgs[i][0].split('/')[-1].split('.png')[0]),str(w),str(h))))
+        return
+
+def save_model(model, path):
+    cPickle.dump(model, open(path, 'wb'))
+
+def load_model(path):
+    cPickle.load(open(path, 'rb'))
 
 ####### Fit training
 ####### Fit predict
 def affinity_progapation(input, **kwargs):
-    clustering = AffinityPropagation(random_state=5).fit(input)
-    return clustering.labels_
+    model = AffinityPropagation(random_state=5).fit(input)
+    return model
 
 def k_mean(input, **kwargs):
-    clustering = KMeans(random_state=5).fit(input)
-    return clustering.labels_
+    model = KMeans(random_state=5).fit(input)
+    return model
 
 def mean_shift(input, **kwargs):
-    clustering = MeanShift().fit(input)
-    return clustering.labels_
+    model = MeanShift().fit(input)
+    return model
