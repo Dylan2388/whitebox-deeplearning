@@ -135,7 +135,7 @@ def bagnet_process(skip_training=False, visualize=False, cluster=True):
             
     if visualize:
         load_model(bagnet, model_path, device)
-        use_cosine = True
+        use_cosine = False
         if use_cosine:
             folder_name = "visualize_cosine"
         else:
