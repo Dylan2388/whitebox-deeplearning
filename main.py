@@ -149,8 +149,5 @@ def bagnet_process(skip_training=False, visualize=False, cluster=True):
         clustering(bagnet, test_loader, folder_name, device, all_args, cluster_method)
 
 
-
-
-
 if __name__ == '__main__':
-    bagnet_process(skip_training=True, visualize=False, cluster=True)
+    bagnet_process(skip_training=True, visualize=True, cluster=False)

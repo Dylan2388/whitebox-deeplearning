@@ -32,14 +32,14 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, use_c
         # Perform a forward pass through the network
         img_enc = model.forward(xs)
 
-        for p in range(20):
+        for p in range(30):
             near_imgs_dir = os.path.join(dir, str(p))
             if not os.path.exists(near_imgs_dir):
                 os.makedirs(near_imgs_dir)
             else:
                 shutil.rmtree(near_imgs_dir)
                 os.makedirs(near_imgs_dir)
-            selection = torch.randint(low=5,high=img_enc.shape[2]-5,size=(2,))
+            selection = torch.randint(low=8,high=img_enc.shape[2]-8,size=(2,))
             if p >= img_enc.shape[0]:
                 p = p - img_enc.shape[0]
             
