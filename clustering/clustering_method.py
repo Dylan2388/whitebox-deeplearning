@@ -8,7 +8,6 @@ import torch.nn.functional as F
 from PIL import Image
 import pickle
 import joblib
-import _pickle as cPickle
 from sklearn.cluster import AffinityPropagation, KMeans, MeanShift
 
 # 1. get output from bagnet 128-D vector (patch - cluster by patch)
@@ -38,7 +37,7 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs[0:10]
+    imgs = dataLoader.dataset.imgs
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -102,7 +101,7 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
         labels = cluster_model.predict(reshaped_img_enc)
         unique, count = np.unique(labels, return_counts=True)
 
-        groups = [[]] * len(unique)
+        groups = [[] for _ in range(cluster_model.cluster_centers_.shape[0])]
 
         for index, value in enumerate(labels):
             i = int(int(index) / int(D2*D3))
@@ -110,7 +109,7 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
             k = int((int(index) % int(D2*D3)) % int(D3))
             groups[value].append([i, j, k])
         
-        for i_group, group in enumerate(groups[0:10]):
+        for i_group, group in enumerate(groups):
             group_dir = os.path.join(dir, str(i_group))
             if not os.path.exists(group_dir):
                 os.makedirs(group_dir)
@@ -130,10 +129,11 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
         return
 
 def save_model(model, path):
-    cPickle.dump(model, open(path, 'wb'))
+    pickle.dump(model, open(path, 'wb'))
 
 def load_model(path):
-    cPickle.load(open(path, 'rb'))
+    model = pickle.load(open(path, 'rb'))
+    return model
 
 ####### Fit training
 ####### Fit predict
