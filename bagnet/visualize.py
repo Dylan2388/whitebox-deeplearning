@@ -76,6 +76,7 @@ def find_similar(current_patch, model, test_loader: DataLoader, device, args: ar
         # print("img normalized tensor: ", img_normalized_tensor.shape, img_normalized_tensor[0,:,:,:].shape)
         # Perform a forward pass through the network
         with torch.no_grad():
+            # l2_norm_img
             img_enc = model.forward(img_normalized_tensor)
         
         if use_cosine:
@@ -96,6 +97,12 @@ def find_similar(current_patch, model, test_loader: DataLoader, device, args: ar
             nearest_patches.append((i[0], nearest_patch_idx,min_dist.item()))
     print("# near: ", len(nearest_patches), flush=True)
     return nearest_patches[:50]
+
+
+
+
+####### Normalize the euclidean distance
+
 
 
 def get_euclidean_distances(patches_c, xs):
@@ -120,3 +127,7 @@ def get_euclidean_distances(patches_c, xs):
     distance = xs_squared_l2 + ps_squared_l2 - 2 * xs_conv
     distance = torch.sqrt(torch.abs(distance)+1e-14) #L2 distance (not squared). Small epsilon added for numerical stability
     return distance  
+
+
+
+

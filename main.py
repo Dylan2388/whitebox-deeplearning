@@ -17,7 +17,7 @@ from util.log import Log
 from util.data import get_dataloaders
 from util.args import get_args, save_args, get_optimizer
 
-from bagnet.bagnet import bagnet33
+from bagnet.bagnet import bagnet33, l2_norm_img
 from bagnet.loss import patch_triplet_loss
 from bagnet.visualize import show_triplets
 from clustering.clustering_method import clustering
@@ -47,7 +47,7 @@ def load_model(model, filename, device):
 #########################
 
 
-def bagnet_process(skip_training=False, visualize=False, cluster=True, cluster_training=True, cluster_testing=True):
+def bagnet_process(training=True, visualize=False, cluster=True, cluster_training=True, cluster_testing=True):
 
     all_args = get_args()
 
@@ -99,7 +99,7 @@ def bagnet_process(skip_training=False, visualize=False, cluster=True, cluster_t
     directory = os.path.abspath(os.getcwd())
     model_path = os.path.join(directory, "bagnet/model/bagnet33.pth")
     
-    if not skip_training:
+    if training:
         for i in range(0, epoch_num):
 
             if os.path.isfile(model_path):
@@ -117,6 +117,7 @@ def bagnet_process(skip_training=False, visualize=False, cluster=True, cluster_t
                 images = images.to(device)
                 # labels = labels.to(device)
                 output = bagnet(images)
+                # output = l2_norm_img(output)
                 loss, dist_pc_pn, dist_pc_pf = patch_triplet_loss(output, 8, 4, 4)
                 
                 # backward
@@ -134,7 +135,7 @@ def bagnet_process(skip_training=False, visualize=False, cluster=True, cluster_t
             
     if visualize:
         load_model(bagnet, model_path, device)
-        use_cosine = True
+        use_cosine = False
         if use_cosine:
             folder_name = "visualize_cosine"
         else:
@@ -154,4 +155,4 @@ def bagnet_process(skip_training=False, visualize=False, cluster=True, cluster_t
 
 
 if __name__ == '__main__':
-    bagnet_process(skip_training=True, visualize=False, cluster=True, cluster_training=True, cluster_testing=True)
+    bagnet_process(training=True, visualize=True, cluster=False, cluster_training=False, cluster_testing=True)
