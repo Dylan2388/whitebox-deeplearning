@@ -37,7 +37,7 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs
+    imgs = dataLoader.dataset.imgs[0:10]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -61,6 +61,7 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
         img_normalized_tensor = transform_normalize(img).unsqueeze_(0).to(device)
 
         with torch.no_grad():
+            # l2_norm_img
             img_enc = model.forward(img_normalized_tensor)
             # [64, 128, 24, 24]
             # [64, 1, 24, 24]
@@ -72,7 +73,10 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
         for j in range(img_shape[1]):
             for k in range(img_shape[2]):
                 reshaped_img_enc[c] = img_enc[:,j,k]
+                ######## save the location as tuple
+                ######## dictionary or 2nd list
                 c += 1
+        #### [dataset_size*24*24, 128]
 
 
     ############## Training clustering model
@@ -94,6 +98,14 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
         save_model(cluster_model, os.path.join(path,model_name))
         return
 
+    ####### Reduce training dataset
+    ####### Separate training and testing phase
+    ####### Add print statement
+    ####### Add visualization of training data
+
+
+    ####### NEXT WEEK: Search for efficient clustering method
+    ####### CONFIRM BAGNET WORKS OR NOT????????
 
     ############### Testing clustering model
     if not training:
@@ -102,6 +114,7 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
         unique, count = np.unique(labels, return_counts=True)
 
         groups = [[] for _ in range(cluster_model.cluster_centers_.shape[0])]
+        ##### label: [dataset_size*24*24]
 
         for index, value in enumerate(labels):
             i = int(int(index) / int(D2*D3))
@@ -109,7 +122,7 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
             k = int((int(index) % int(D2*D3)) % int(D3))
             groups[value].append([i, j, k])
         
-        for i_group, group in enumerate(groups):
+        for i_group, group in enumerate(groups[0:10]):
             group_dir = os.path.join(dir, str(i_group))
             if not os.path.exists(group_dir):
                 os.makedirs(group_dir)

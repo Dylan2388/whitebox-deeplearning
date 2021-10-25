@@ -109,6 +109,7 @@ class BagNet(nn.Module):
         x = self.layer4(x)
 
         x = self.unsup_layer(x)
+        x = l2_norm_img(x)
 
         return x
 
@@ -137,19 +138,35 @@ def bagnet33(device, pretrained=False, strides=[2, 2, 2, 1], **kwargs):
     return model
 
 
+# base_architecture_to_features = {'bagnet33': bagnet33}
+
+# def get_network(num_out_channels: int, net: str, disable_pretrained: bool):
+#     features = base_architecture_to_features[net](pretrained=not disable_pretrained)           
+#     features_name = str(features).upper()
+#     if features_name.startswith('VGG') or features_name.startswith('RES') or features_name.startswith('BAG'):
+#         first_add_on_layer_in_channels = \
+#             [i for i in features.modules() if isinstance(i, nn.Conv2d)][-1].out_channels
+#     if features_name.startswith('BAG'):
+#         add_on_layer = nn.Sequential(nn.Conv2d(in_channels=first_add_on_layer_in_channels, out_channels=num_out_channels, kernel_size=1, stride = 1, bias=False))
+#         return add_on_layer
+#     else:
+#         return None
 
 
 
-base_architecture_to_features = {'bagnet33': bagnet33}
-
-def get_network(num_out_channels: int, net: str, disable_pretrained: bool):
-    features = base_architecture_to_features[net](pretrained=not disable_pretrained)           
-    features_name = str(features).upper()
-    if features_name.startswith('VGG') or features_name.startswith('RES') or features_name.startswith('BAG'):
-        first_add_on_layer_in_channels = \
-            [i for i in features.modules() if isinstance(i, nn.Conv2d)][-1].out_channels
-    if features_name.startswith('BAG'):
-        add_on_layer = nn.Sequential(nn.Conv2d(in_channels=first_add_on_layer_in_channels, out_channels=num_out_channels, kernel_size=1, stride = 1, bias=False))
-        return add_on_layer
-    else:
-        return None
+# adapted from https://github.com/tbmoon/facenet/blob/master/models.py#L70
+def l2_norm_img(input):
+    # print("input: ", input)
+    input_size = input.size()
+    # print("input size: ", input_size)
+    buffer = torch.pow(input, 2)
+    # print("buffer: ", buffer.shape, buffer)
+    normp = torch.sum(buffer, 1).add_(1e-10)
+    # print("normp: ", normp.shape, normp)
+    norm = torch.sqrt(normp)
+    # print("norm: ", norm.shape, norm)
+    _output = torch.div(input, norm.unsqueeze(1).expand_as(input))
+    # print("_output: ", _output.shape, _output)
+    output = _output.view(input_size)
+    # print("output: ", output.shape, output)
+    return output
