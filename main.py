@@ -118,7 +118,7 @@ def bagnet_process(training=True, visualize=False, cluster=True, cluster_trainin
                 # labels = labels.to(device)
                 output = bagnet(images)
                 # output = l2_norm_img(output)
-                loss, dist_pc_pn, dist_pc_pf = patch_triplet_loss(output, 8, 4, 4)
+                loss, dist_pc_pn, dist_pc_pf = patch_triplet_loss(output, 8, 0.2, 0.2)
                 
                 # backward
                 optimizer_bagnet.zero_grad()
