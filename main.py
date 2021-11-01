@@ -155,4 +155,4 @@ def bagnet_process(training=True, visualize=False, cluster=True, cluster_trainin
 
 
 if __name__ == '__main__':
-    bagnet_process(training=True, visualize=True, cluster=False, cluster_training=False, cluster_testing=True)
+    bagnet_process(training=False, visualize=True, cluster=False, cluster_training=False, cluster_testing=True)
