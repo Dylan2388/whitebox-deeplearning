@@ -57,7 +57,7 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, use_c
 def find_similar(current_patch, model, test_loader: DataLoader, device, args: argparse.Namespace, use_cosine: bool):
     nearest_patches = []
     sim_threshold = 0.9
-    dist_threshold = 0.2
+    dist_threshold = 0.5
     imgs = test_loader.dataset.imgs
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
