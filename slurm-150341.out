@@ -1,0 +1,4 @@
+	Adding nVidia Cuda Toolkit 10.2 (Patch2)
+Log dir:  ./runs/run_bagnet
+Num classes (k) =  200
+slurmstepd-ctit082: error: *** JOB 150341 ON ctit082 CANCELLED AT 2021-11-01T13:53:55 ***

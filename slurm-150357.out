@@ -1,0 +1,43 @@
+	Adding nVidia Cuda Toolkit 10.2 (Patch2)
+Log dir:  ./runs/run_bagnet
+Num classes (k) =  200
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
+# near:  0
+# near:  3
+# near:  1
+# near:  106
+# near:  0
+# near:  1
+# near:  0
+# near:  6
+# near:  670
+# near:  1
+# near:  81
+# near:  1
+# near:  4
+# near:  0
+# near:  7
+# near:  0
+# near:  19
+# near:  0
+# near:  0
+# near:  5
+# near:  1
+# near:  1
+# near:  11
+# near:  0
+# near:  0
+# near:  8
+# near:  0
+# near:  0
+# near:  1
+# near:  2
+/home/s2845016/miniconda3/envs/capitaSelecta/lib/python3.8/site-packages/torchvision/transforms/functional.py:594: UserWarning: torch.lstsq is deprecated in favor of torch.linalg.lstsq and will be removed in a future PyTorch release.
+torch.linalg.lstsq has reversed arguments and does not return the QR decomposition in the returned tuple (although it returns other information about the problem).
+To get the qr decomposition consider using torch.linalg.qr.
+The returned solution in torch.lstsq stored the residuals of the solution in the last m - n columns of the returned value whenever m > n. In torch.linalg.lstsq, the residuals in the field 'residuals' of the returned named tuple.
+The unpacking of the solution, as in
+X, _ = torch.lstsq(B, A).solution[:A.size(1)]
+should be replaced with
+X = torch.linalg.lstsq(A, B).solution (Triggered internally at  /opt/conda/conda-bld/pytorch_1631630815121/work/aten/src/ATen/LegacyTHFunctionsCPU.cpp:389.)
+  res = torch.lstsq(b_matrix, a_matrix)[0]
