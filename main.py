@@ -47,7 +47,7 @@ def load_model(model, filename, device):
 #########################
 
 
-def bagnet_process(training=True, visualize=False, cluster=True, cluster_training=True, cluster_testing=True):
+def bagnet_process(training=True, visualize=False, visualize_trainloader=True, cluster=True, cluster_training=True, cluster_testing=True):
 
     all_args = get_args()
 
@@ -134,13 +134,19 @@ def bagnet_process(training=True, visualize=False, cluster=True, cluster_trainin
             save_model(bagnet, model_path, confirm=False)
             
     if visualize:
+        if visualize_trainloader:
+            data = trainloader
+            folder_name = "visualize_trainloader"
+        else: 
+            data = test_loader
+            folder_name = "visualize_testloader"
         load_model(bagnet, model_path, device)
         use_cosine = False
-        if use_cosine:
-            folder_name = "visualize_cosine"
-        else:
-            folder_name = "visualize_euclidean"
-        show_triplets(bagnet, test_loader, folder_name, device, use_cosine, all_args)
+        # if use_cosine:
+        #     folder_name = "visualize_cosine"
+        # else:
+        #     folder_name = "visualize_euclidean"
+        show_triplets(bagnet, data, folder_name, device, use_cosine, all_args)
 
     if cluster:
         load_model(bagnet, model_path, device)
@@ -155,4 +161,4 @@ def bagnet_process(training=True, visualize=False, cluster=True, cluster_trainin
 
 
 if __name__ == '__main__':
-    bagnet_process(training=False, visualize=True, cluster=False, cluster_training=False, cluster_testing=True)
+    bagnet_process(training=False, visualize=True, visualize_trainloader=True, cluster=False, cluster_training=False, cluster_testing=True)
