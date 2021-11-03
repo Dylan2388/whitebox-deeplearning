@@ -57,7 +57,7 @@ class EarlyStopping:
         self.tolerance = tolerance
         self.patience = patience
     
-    def stop_criterion(self, val_errors):
+    def stop_criterion(self, val_errors, device):
         """
         Args:
           val_errors (iterable): Validation errors after every update during training.
@@ -71,7 +71,7 @@ class EarlyStopping:
             return False
 
         min_val_error = min(val_errors)
-        val_errors = np.array(val_errors[-self.patience:])
+        val_errors = torch.from_numpy(np.array(val_errors[-self.patience:])).to(device)
         return all(val_errors > min_val_error + self.tolerance)
 
 #########################
@@ -106,10 +106,10 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
 
     # YOUR CODE HERE
     # parameters
-    lr = 0.01
+    lr = 0.001
     epoch_num = 30
     
-    optimizer_bagnet = optim.Adam(bagnet.parameters(), lr=lr, weight_decay=0.001)
+    optimizer_bagnet = optim.Adam(bagnet.parameters(), lr=lr, weight_decay=0.0001)
     # early stoping initial
     train_errors = []  # Keep track of the training error
     val_errors = []  # Keep track of the validation error
@@ -191,14 +191,14 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
             print("Min: {:.3f}".format(min_dist_pc_pf), flush=True)
             print("Mean: {:.3f}".format(mean_dist_pc_pf), flush=True)
             print("---")
-            print("Loss: {:.3f}" + str(mean_loss), flush=True)
+            print("Loss: {:.3f}".format(mean_loss), flush=True)
 
             ### SAVE MODEL
             save_model(bagnet, model_path, confirm=False)
 
             ### EARLY STOPPING
             train_errors.append(mean_loss)
-            if early_stop.stop_criterion(train_errors):
+            if early_stop.stop_criterion(train_errors, device):
                 print(val_errors[epoch])
                 print('STOP AFTER {:d} EPOCHS'.format(epoch))
                 break
