@@ -71,7 +71,7 @@ class EarlyStopping:
             return False
 
         min_val_error = min(val_errors)
-        val_errors = torch.from_numpy(np.array(val_errors[-self.patience:])).to(device)
+        val_errors = np.array(val_errors[-self.patience:])
         return all(val_errors > min_val_error + self.tolerance)
 
 #########################
@@ -113,7 +113,7 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
     # early stoping initial
     train_errors = []  # Keep track of the training error
     val_errors = []  # Keep track of the validation error
-    early_stop = EarlyStopping(tolerance=0.005, patience=1)
+    early_stop = EarlyStopping(tolerance=0.005, patience=5)
     # freeze param
     for name, param in bagnet.named_parameters():
         if "unsup_layer" not in name:
@@ -159,20 +159,23 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
                 optimizer_bagnet.step()
 
                 ####### PRINT DISTANCE:
+                # Sort ascending
+                sorted_dist_pc_pn, _ = torch.sort(dist_pc_pn)
+                sorted_dist_pc_pf, _ = torch.sort(dist_pc_pf)
                 # Replace max
-                if max_dist_pc_pn < max(dist_pc_pn):
-                    max_dist_pc_pn = max(dist_pc_pn)
-                if max_dist_pc_pf < max(dist_pc_pf):
-                    max_dist_pc_pf = max(dist_pc_pf)
+                if max_dist_pc_pn < sorted_dist_pc_pn[-1]:
+                    max_dist_pc_pn = sorted_dist_pc_pn[-1].item()
+                if max_dist_pc_pf < sorted_dist_pc_pf[-1]:
+                    max_dist_pc_pf = sorted_dist_pc_pf[-1].item()
                 # Replace min
-                if min_dist_pc_pn > min(dist_pc_pn):
-                    min_dist_pc_pn = min(dist_pc_pn)
-                if min_dist_pc_pf > min(dist_pc_pf):
-                    min_dist_pc_pf = min(dist_pc_pf)
+                if min_dist_pc_pn > sorted_dist_pc_pn[1]:
+                    min_dist_pc_pn = sorted_dist_pc_pn[1].item()
+                if min_dist_pc_pf > sorted_dist_pc_pf[1]:
+                    min_dist_pc_pf = sorted_dist_pc_pf[1].item()
                 # Add sum
-                sum_dist_pc_pn = sum_dist_pc_pn + torch.mean(dist_pc_pn)
-                sum_dist_pc_pf = sum_dist_pc_pf + torch.mean(dist_pc_pf)
-                sum_loss = sum_loss + loss
+                sum_dist_pc_pn = sum_dist_pc_pn + torch.mean(dist_pc_pn).item()
+                sum_dist_pc_pf = sum_dist_pc_pf + torch.mean(dist_pc_pf).item()
+                sum_loss = sum_loss + loss.item()
 
             # Compute mean
             n = len(trainloader)
