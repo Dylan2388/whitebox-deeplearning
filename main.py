@@ -46,6 +46,36 @@ def load_model(model, filename, device):
 
 #########################
 
+class EarlyStopping:
+    def __init__(self, tolerance, patience):
+        """
+        Args:
+          patience (int):    Maximum number of epochs with unsuccessful updates.
+          tolerance (float): We assume that the update is unsuccessful if the validation error is larger
+                              than the best validation error so far plus this tolerance.
+        """
+        self.tolerance = tolerance
+        self.patience = patience
+    
+    def stop_criterion(self, val_errors):
+        """
+        Args:
+          val_errors (iterable): Validation errors after every update during training.
+        
+        Returns: True if training should be stopped: when the validation error is larger than the best
+                  validation error obtained so far (with given tolearance) for patience epochs (number of consecutive epochs for which the criterion is satisfied).
+                 
+                 Otherwise, False.
+        """
+        if len(val_errors) <= self.patience:
+            return False
+
+        min_val_error = min(val_errors)
+        val_errors = np.array(val_errors[-self.patience:])
+        return all(val_errors > min_val_error + self.tolerance)
+
+#########################
+
 
 def bagnet_process(training=True, visualize=False, visualize_trainloader=True, cluster=True, cluster_training=True, cluster_testing=True):
 
@@ -69,27 +99,21 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
     # Obtain the data loaders
     trainloader, projectloader, test_loader, classes, num_channels = get_dataloaders(all_args)
 
-    # trained_orig_trees = []
-    # trained_pruned_trees = []
-    # trained_pruned_projected_trees = []
-    # orig_test_accuracies = []
-    # pruned_test_accuracies = []
-    # pruned_projected_test_accuracies = []
-    # project_infos = []
-    # infos_sample_max = []
-    # infos_greedy = []
-    # infos_fidelity = []
-
-    bagnet = bagnet33(device, pretrained=True)
-    # unsupervised_layer = get_network(128, 'bagnet33', False)
+    # Number of output channel
+    out_channel = 64
+    bagnet = bagnet33(device, pretrained=True, out_channel=out_channel)
     bagnet.to(device)
 
     # YOUR CODE HERE
     # parameters
     lr = 0.01
-    epoch_num = 10
+    epoch_num = 30
     
-    optimizer_bagnet = optim.Adam(bagnet.parameters(), lr=lr)
+    optimizer_bagnet = optim.Adam(bagnet.parameters(), lr=lr, weight_decay=0.001)
+    # early stoping initial
+    train_errors = []  # Keep track of the training error
+    val_errors = []  # Keep track of the validation error
+    early_stop = EarlyStopping(tolerance=0.005, patience=5)
     # freeze param
     for name, param in bagnet.named_parameters():
         if "unsup_layer" not in name:
@@ -97,21 +121,30 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
 
     # current directory
     directory = os.path.abspath(os.getcwd())
-    model_path = os.path.join(directory, "bagnet/model/bagnet33.pth")
+    model = "bagnet/model/bagnet33_encoder" + str(out_channel) + ".pth"
+    model_path = os.path.join(directory, model)
     
     if training:
-        for i in range(0, epoch_num):
+        for epoch in range(epoch_num):
 
             if os.path.isfile(model_path):
                 load_model(bagnet, model_path, device)
                 print ("Load Model BagNet Successfully")
 
-            # print epoch info
-            c = 0
-            p_old = 0
-            print("Epoch " + str(i) + ":")
 
+            ##### PRINT EPOCH:
+            max_dist_pc_pn = -np.inf
+            max_dist_pc_pf = -np.inf
+            min_dist_pc_pn = np.inf
+            min_dist_pc_pf = np.inf
 
+            sum_dist_pc_pn = 0
+            sum_dist_pc_pf = 0
+            sum_loss = 0
+
+            print("##################################", flush=True)
+            print("EPOCH {:d}:".format(epoch), flush=True)
+            
             for images, labels in trainloader:
                 # forward
                 images = images.to(device)
@@ -125,14 +158,52 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
                 loss.backward()
                 optimizer_bagnet.step()
 
-                ## Print progress
-                p_new = round(c/len(trainloader), 2)
-                if p_old != p_new:
-                    print("### Progress: " + str(p_new))
-                    p_old = p_new
-                    c += 1
+                ####### PRINT DISTANCE:
+                # Replace max
+                if max_dist_pc_pn < max(dist_pc_pn):
+                    max_dist_pc_pn = max(dist_pc_pn)
+                if max_dist_pc_pf < max(dist_pc_pf):
+                    max_dist_pc_pf = max(dist_pc_pf)
+                # Replace min
+                if min_dist_pc_pn > min(dist_pc_pn):
+                    min_dist_pc_pn = min(dist_pc_pn)
+                if min_dist_pc_pf > min(dist_pc_pf):
+                    min_dist_pc_pf = min(dist_pc_pf)
+                # Add sum
+                sum_dist_pc_pn = sum_dist_pc_pn + torch.mean(dist_pc_pn)
+                sum_dist_pc_pf = sum_dist_pc_pf + torch.mean(dist_pc_pf)
+                sum_loss = sum_loss + loss
+
+            # Compute mean
+            n = len(trainloader)
+            mean_dist_pc_pn = sum_dist_pc_pn / n
+            mean_dist_pc_pf = sum_dist_pc_pf / n
+            mean_loss = sum_loss / n
+
+            ####### PRINT INFO:
+            print("Near Patch Distance:", flush=True)
+            print("Max: {:.3f}".format(round(max_dist_pc_pn, 3)), flush=True)
+            print("Min: {:.3f}".format(round(min_dist_pc_pn, 3)), flush=True)
+            print("Mean: {:.3f}".format(round(mean_dist_pc_pn, 3)), flush=True)
+            print("---")
+            print("Far Patch Distance:", flush=True)
+            print("Max: {:.3f}".format(round(max_dist_pc_pf, 3)), flush=True)
+            print("Min: {:.3f}".format(round(min_dist_pc_pf, 3)), flush=True)
+            print("Mean: {:.3f}".format(round(mean_dist_pc_pf, 3)), flush=True)
+            print("---")
+            print("Loss: {:.3f}" + str(round(mean_loss, 3)), flush=True)
+
+            ### SAVE MODEL
             save_model(bagnet, model_path, confirm=False)
+
+            ### EARLY STOPPING
+            train_errors.append(mean_loss)
+            if early_stop.stop_criterion(train_errors):
+                print(val_errors[epoch])
+                print('STOP AFTER {:d} EPOCHS'.format(epoch))
+                break
             
+
     if visualize:
         if visualize_trainloader:
             data = trainloader
@@ -161,4 +232,4 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
 
 
 if __name__ == '__main__':
-    bagnet_process(training=False, visualize=True, visualize_trainloader=True, cluster=False, cluster_training=False, cluster_testing=True)
+    bagnet_process(training=True, visualize=False, visualize_trainloader=False, cluster=False, cluster_training=False, cluster_testing=False)

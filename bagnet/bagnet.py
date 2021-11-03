@@ -51,7 +51,7 @@ class Bottleneck(nn.Module):
 
 class BagNet(nn.Module):
 
-    def __init__(self, block, layers, strides=[1, 2, 2, 2], kernel3=[0, 0, 0, 0], num_classes=1000, avg_pool=True):
+    def __init__(self, block, layers, strides=[1, 2, 2, 2], kernel3=[0, 0, 0, 0], out_channel=128, num_classes=1000, avg_pool=True):
         self.inplanes = 64
         super(BagNet, self).__init__()
         self.conv1 = nn.Conv2d(3, 64, kernel_size=1, stride=1, padding=0,
@@ -67,7 +67,7 @@ class BagNet(nn.Module):
         # self.avgpool = nn.AvgPool2d(1, stride=1)
         # self.fc = nn.Linear(512 * block.expansion, num_classes)
         # self.avg_pool = avg_pool
-        self.unsup_layer = nn.Conv2d(in_channels=512 * block.expansion, out_channels=128, kernel_size=1, stride = 1, bias=False)
+        self.unsup_layer = nn.Conv2d(in_channels=512 * block.expansion, out_channels=out_channel, kernel_size=1, stride = 1, bias=False)
         self.block = block
 
         for m in self.modules():
@@ -118,13 +118,13 @@ model_urls = {'bagnet33': 'https://bitbucket.org/wielandbrendel/bag-of-feature-p
 
 #####################################3
 
-def bagnet33(device, pretrained=False, strides=[2, 2, 2, 1], **kwargs):
+def bagnet33(device, pretrained=False, strides=[2, 2, 2, 1], out_channel=128, **kwargs):
     """Constructs a Bagnet-33 model.
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = BagNet(Bottleneck, [3, 4, 6, 3], strides=strides, kernel3=[1,1,1,1], **kwargs)
+    model = BagNet(Bottleneck, [3, 4, 6, 3], strides=strides, kernel3=[1,1,1,1], out_channel=out_channel, **kwargs)
     if pretrained:
         # model.load_state_dict(model_zoo.load_url(model_urls['bagnet33']))
         model_dict = model_zoo.load_url(model_urls['bagnet33'], map_location=device)
