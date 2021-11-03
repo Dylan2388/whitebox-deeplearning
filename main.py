@@ -182,16 +182,16 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
 
             ####### PRINT INFO:
             print("Near Patch Distance:", flush=True)
-            print("Max: {:.3f}".format(round(max_dist_pc_pn, 3)), flush=True)
-            print("Min: {:.3f}".format(round(min_dist_pc_pn, 3)), flush=True)
-            print("Mean: {:.3f}".format(round(mean_dist_pc_pn, 3)), flush=True)
+            print("Max: {:.3f}".format(max_dist_pc_pn), flush=True)
+            print("Min: {:.3f}".format(min_dist_pc_pn), flush=True)
+            print("Mean: {:.3f}".format(mean_dist_pc_pn), flush=True)
             print("---")
             print("Far Patch Distance:", flush=True)
-            print("Max: {:.3f}".format(round(max_dist_pc_pf, 3)), flush=True)
-            print("Min: {:.3f}".format(round(min_dist_pc_pf, 3)), flush=True)
-            print("Mean: {:.3f}".format(round(mean_dist_pc_pf, 3)), flush=True)
+            print("Max: {:.3f}".format(max_dist_pc_pf), flush=True)
+            print("Min: {:.3f}".format(min_dist_pc_pf), flush=True)
+            print("Mean: {:.3f}".format(mean_dist_pc_pf), flush=True)
             print("---")
-            print("Loss: {:.3f}" + str(round(mean_loss, 3)), flush=True)
+            print("Loss: {:.3f}" + str(mean_loss), flush=True)
 
             ### SAVE MODEL
             save_model(bagnet, model_path, confirm=False)
