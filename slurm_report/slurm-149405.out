@@ -1,53 +1,0 @@
-	Adding nVidia Cuda Toolkit 10.2 (Patch2)
-Matplotlib is building the font cache; this may take a moment.
-Log dir:  ./runs/run_bagnet
-Num classes (k) =  200
-Downloading: "https://bitbucket.org/wielandbrendel/bag-of-feature-pretrained-models/raw/249e8fa82c0913623a807d9d35eeab9da7dcc2a8/bagnet32-2ddd53ed.pth.tar" to /home/s2845016/.cache/torch/hub/checkpoints/bagnet32-2ddd53ed.pth.tar
-  0%|          | 0.00/70.1M [00:00<?, ?B/s]  0%|          | 264k/70.1M [00:00<00:28, 2.58MB/s]  1%|          | 736k/70.1M [00:00<00:18, 3.85MB/s]  2%|▏         | 1.70M/70.1M [00:00<00:10, 6.75MB/s]  6%|▌         | 3.92M/70.1M [00:00<00:05, 13.2MB/s]  9%|▉         | 6.55M/70.1M [00:00<00:03, 18.3MB/s] 14%|█▍        | 10.1M/70.1M [00:00<00:02, 24.7MB/s] 20%|█▉        | 13.8M/70.1M [00:00<00:02, 29.2MB/s] 26%|██▌       | 17.9M/70.1M [00:00<00:01, 33.5MB/s] 32%|███▏      | 22.4M/70.1M [00:00<00:01, 37.8MB/s] 38%|███▊      | 26.9M/70.1M [00:01<00:01, 40.8MB/s] 46%|████▌     | 32.0M/70.1M [00:01<00:00, 44.5MB/s] 54%|█████▍    | 37.7M/70.1M [00:01<00:00, 49.2MB/s] 63%|██████▎   | 44.0M/70.1M [00:01<00:00, 54.3MB/s] 72%|███████▏  | 50.2M/70.1M [00:01<00:00, 57.4MB/s] 81%|████████  | 56.5M/70.1M [00:01<00:00, 59.9MB/s] 89%|████████▉ | 62.5M/70.1M [00:01<00:00, 61.0MB/s] 98%|█████████▊| 68.7M/70.1M [00:01<00:00, 62.1MB/s]100%|██████████| 70.1M/70.1M [00:01<00:00, 42.4MB/s]
-/home/s2845016/miniconda3/envs/capitaSelecta/lib/python3.8/site-packages/torchvision/transforms/functional.py:594: UserWarning: torch.lstsq is deprecated in favor of torch.linalg.lstsq and will be removed in a future PyTorch release.
-torch.linalg.lstsq has reversed arguments and does not return the QR decomposition in the returned tuple (although it returns other information about the problem).
-To get the qr decomposition consider using torch.linalg.qr.
-The returned solution in torch.lstsq stored the residuals of the solution in the last m - n columns of the returned value whenever m > n. In torch.linalg.lstsq, the residuals in the field 'residuals' of the returned named tuple.
-The unpacking of the solution, as in
-X, _ = torch.lstsq(B, A).solution[:A.size(1)]
-should be replaced with
-X = torch.linalg.lstsq(A, B).solution (Triggered internally at  /opt/conda/conda-bld/pytorch_1631630815121/work/aten/src/ATen/LegacyTHFunctionsCPU.cpp:389.)
-  res = torch.lstsq(b_matrix, a_matrix)[0]
-Epoch 0:
-Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Load Model BagNet Successfully
-Epoch 1:
-Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Load Model BagNet Successfully
-Epoch 2:
-Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Load Model BagNet Successfully
-Epoch 3:
-Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Load Model BagNet Successfully
-Epoch 4:
-Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Load Model BagNet Successfully
-Epoch 5:
-Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Load Model BagNet Successfully
-Epoch 6:
-Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Load Model BagNet Successfully
-Epoch 7:
-Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Load Model BagNet Successfully
-Epoch 8:
-Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.
-Load Model BagNet Successfully
-Epoch 9:
-Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33.pth.

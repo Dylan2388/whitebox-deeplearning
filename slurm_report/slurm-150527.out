@@ -1,7 +1,0 @@
-	Adding nVidia Cuda Toolkit 10.2 (Patch2)
-Log dir:  ./runs/run_bagnet
-Num classes (k) =  200
-Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
-# near:  34
-# near:  0
-slurmstepd-ctit082: error: *** JOB 150527 ON ctit082 CANCELLED AT 2021-11-04T11:38:59 ***
