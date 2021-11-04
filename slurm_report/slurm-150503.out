@@ -1,0 +1,21 @@
+	Adding nVidia Cuda Toolkit 10.2 (Patch2)
+Log dir:  ./runs/run_bagnet
+Num classes (k) =  200
+##################################
+EPOCH 0:
+Near Patch Distance:
+/home/s2845016/miniconda3/envs/capitaSelecta/lib/python3.8/site-packages/torchvision/transforms/functional.py:594: UserWarning: torch.lstsq is deprecated in favor of torch.linalg.lstsq and will be removed in a future PyTorch release.
+torch.linalg.lstsq has reversed arguments and does not return the QR decomposition in the returned tuple (although it returns other information about the problem).
+To get the qr decomposition consider using torch.linalg.qr.
+The returned solution in torch.lstsq stored the residuals of the solution in the last m - n columns of the returned value whenever m > n. In torch.linalg.lstsq, the residuals in the field 'residuals' of the returned named tuple.
+The unpacking of the solution, as in
+X, _ = torch.lstsq(B, A).solution[:A.size(1)]
+should be replaced with
+X = torch.linalg.lstsq(A, B).solution (Triggered internally at  /opt/conda/conda-bld/pytorch_1631630815121/work/aten/src/ATen/LegacyTHFunctionsCPU.cpp:389.)
+  res = torch.lstsq(b_matrix, a_matrix)[0]
+Traceback (most recent call last):
+  File "main.py", line 235, in <module>
+    bagnet_process(training=True, visualize=False, visualize_trainloader=False, cluster=False, cluster_training=False, cluster_testing=False)
+  File "main.py", line 185, in bagnet_process
+    print("Max: {:.3f}".format(round(max_dist_pc_pn, 3)), flush=True)
+TypeError: type Tensor doesn't define __round__ method

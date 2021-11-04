@@ -1,0 +1,116 @@
+	Adding nVidia Cuda Toolkit 10.2 (Patch2)
+Log dir:  ./runs/run_bagnet
+Num classes (k) =  200
+##################################
+EPOCH 0:
+Near Patch Distance:
+Max: 1.599
+Min: 0.000
+Mean: 0.740
+---
+Far Patch Distance:
+Max: 1.778
+Min: 0.000
+Mean: 1.089
+---
+Loss: {:.3f}tensor(0.0680, device='cuda:0', grad_fn=<DivBackward0>)
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 1:
+Near Patch Distance:
+Max: 1.730
+Min: 0.000
+Mean: 0.708
+---
+Far Patch Distance:
+Max: 1.814
+Min: 0.000
+Mean: 1.052
+---
+Loss: {:.3f}tensor(0.0726, device='cuda:0', grad_fn=<DivBackward0>)
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 2:
+Near Patch Distance:
+Max: 1.681
+Min: 0.000
+Mean: 0.709
+---
+Far Patch Distance:
+Max: 1.804
+Min: 0.000
+Mean: 1.051
+---
+Loss: {:.3f}tensor(0.0712, device='cuda:0', grad_fn=<DivBackward0>)
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 3:
+Near Patch Distance:
+Max: 1.664
+Min: 0.000
+Mean: 0.711
+---
+Far Patch Distance:
+Max: 1.793
+Min: 0.000
+Mean: 1.060
+---
+Loss: {:.3f}tensor(0.0710, device='cuda:0', grad_fn=<DivBackward0>)
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 4:
+Near Patch Distance:
+Max: 1.704
+Min: 0.000
+Mean: 0.714
+---
+Far Patch Distance:
+Max: 1.796
+Min: 0.000
+Mean: 1.064
+---
+Loss: {:.3f}tensor(0.0705, device='cuda:0', grad_fn=<DivBackward0>)
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 5:
+Near Patch Distance:
+Max: 1.691
+Min: 0.000
+Mean: 0.691
+---
+Far Patch Distance:
+Max: 1.808
+Min: 0.000
+Mean: 1.023
+---
+Loss: {:.3f}tensor(0.0731, device='cuda:0', grad_fn=<DivBackward0>)
+/home/s2845016/miniconda3/envs/capitaSelecta/lib/python3.8/site-packages/torchvision/transforms/functional.py:594: UserWarning: torch.lstsq is deprecated in favor of torch.linalg.lstsq and will be removed in a future PyTorch release.
+torch.linalg.lstsq has reversed arguments and does not return the QR decomposition in the returned tuple (although it returns other information about the problem).
+To get the qr decomposition consider using torch.linalg.qr.
+The returned solution in torch.lstsq stored the residuals of the solution in the last m - n columns of the returned value whenever m > n. In torch.linalg.lstsq, the residuals in the field 'residuals' of the returned named tuple.
+The unpacking of the solution, as in
+X, _ = torch.lstsq(B, A).solution[:A.size(1)]
+should be replaced with
+X = torch.linalg.lstsq(A, B).solution (Triggered internally at  /opt/conda/conda-bld/pytorch_1631630815121/work/aten/src/ATen/LegacyTHFunctionsCPU.cpp:389.)
+  res = torch.lstsq(b_matrix, a_matrix)[0]
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Traceback (most recent call last):
+  File "main.py", line 235, in <module>
+    bagnet_process(training=True, visualize=False, visualize_trainloader=False, cluster=False, cluster_training=False, cluster_testing=False)
+  File "main.py", line 201, in bagnet_process
+    if early_stop.stop_criterion(train_errors):
+  File "main.py", line 74, in stop_criterion
+    val_errors = np.array(val_errors[-self.patience:])
+  File "/home/s2845016/miniconda3/envs/capitaSelecta/lib/python3.8/site-packages/torch/_tensor.py", line 643, in __array__
+    return self.numpy()
+TypeError: can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.
