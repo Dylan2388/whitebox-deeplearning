@@ -168,10 +168,10 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
                 if max_dist_pc_pf < sorted_dist_pc_pf[-1]:
                     max_dist_pc_pf = sorted_dist_pc_pf[-1].item()
                 # Replace min
-                if min_dist_pc_pn > sorted_dist_pc_pn[1]:
-                    min_dist_pc_pn = sorted_dist_pc_pn[1].item()
-                if min_dist_pc_pf > sorted_dist_pc_pf[1]:
-                    min_dist_pc_pf = sorted_dist_pc_pf[1].item()
+                if min_dist_pc_pn > sorted_dist_pc_pn[0] and sorted_dist_pc_pn[0] > 0.0001:
+                    min_dist_pc_pn = sorted_dist_pc_pn[0].item()
+                if min_dist_pc_pf > sorted_dist_pc_pf[0] and sorted_dist_pc_pn[0] > 0.0001:
+                    min_dist_pc_pf = sorted_dist_pc_pf[0].item()
                 # Add sum
                 sum_dist_pc_pn = sum_dist_pc_pn + torch.mean(dist_pc_pn).item()
                 sum_dist_pc_pf = sum_dist_pc_pf + torch.mean(dist_pc_pf).item()
