@@ -18,7 +18,7 @@ from sklearn.cluster import AffinityPropagation, KMeans, MeanShift
 ####### CLUSTER METHOD
 ### 0. Affinity propagation
 
-def clustering(model, dataLoader: DataLoader, foldername: str, device, args: argparse.Namespace, clusterMethod: int, training: bool, model_path=""):
+def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, device, args: argparse.Namespace, clusterMethod: int, training: bool, model_path=""):
     modelname = args.net
 
     if 'bagnet' not in modelname: #modelname can be "bagnet33" leading to patchsize = 33
@@ -37,7 +37,7 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs[0:10]
+    imgs = dataLoader.dataset.imgs
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -47,11 +47,12 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
                             normalize
                         ])
 
+
     ####### init clustered input
     D1 = len(imgs)
     D2 = 24
     D3 = 24
-    reshaped_img_enc = np.empty([D1*D2*D3, 128])
+    reshaped_img_enc = np.empty([D1*D2*D3, input_channel])
     c = 0
 
     for i, image in enumerate(imgs):
@@ -77,7 +78,7 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
                 ######## dictionary or 2nd list
                 c += 1
         #### [dataset_size*24*24, 128]
-
+    print("Finish encoding data. Start Training...", flush=True)
 
     ############## Training clustering model
     if training:
@@ -96,6 +97,7 @@ def clustering(model, dataLoader: DataLoader, foldername: str, device, args: arg
         if not os.path.exists(path):
             os.makedirs(path)
         save_model(cluster_model, os.path.join(path,model_name))
+        print("Finish training data.", flush=True)
         return
 
     ####### Reduce training dataset
