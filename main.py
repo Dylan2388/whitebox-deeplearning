@@ -113,7 +113,7 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
     # early stoping initial
     train_errors = []  # Keep track of the training error
     val_errors = []  # Keep track of the validation error
-    early_stop = EarlyStopping(tolerance=0.005, patience=5)
+    early_stop = EarlyStopping(tolerance=0.0005, patience=5)
     # freeze param
     for name, param in bagnet.named_parameters():
         if "unsup_layer" not in name:
