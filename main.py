@@ -107,13 +107,13 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
     # YOUR CODE HERE
     # parameters
     lr = 0.001
-    epoch_num = 30
+    epoch_num = 50
     
     optimizer_bagnet = optim.Adam(bagnet.parameters(), lr=lr, weight_decay=0.0001)
     # early stoping initial
     train_errors = []  # Keep track of the training error
     val_errors = []  # Keep track of the validation error
-    early_stop = EarlyStopping(tolerance=0.0005, patience=5)
+    early_stop = EarlyStopping(tolerance=0.0005, patience=10)
     # freeze param
     for name, param in bagnet.named_parameters():
         if "unsup_layer" not in name:
