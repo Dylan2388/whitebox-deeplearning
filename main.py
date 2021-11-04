@@ -113,7 +113,7 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
     # early stoping initial
     train_errors = []  # Keep track of the training error
     val_errors = []  # Keep track of the validation error
-    early_stop = EarlyStopping(tolerance=0.0005, patience=10)
+    early_stop = EarlyStopping(tolerance=0.001, patience=5)
     # freeze param
     for name, param in bagnet.named_parameters():
         if "unsup_layer" not in name:
@@ -170,7 +170,7 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
                 # Replace min
                 if min_dist_pc_pn > sorted_dist_pc_pn[0] and sorted_dist_pc_pn[0] > 0.0001:
                     min_dist_pc_pn = sorted_dist_pc_pn[0].item()
-                if min_dist_pc_pf > sorted_dist_pc_pf[0] and sorted_dist_pc_pn[0] > 0.0001:
+                if min_dist_pc_pf > sorted_dist_pc_pf[0] and sorted_dist_pc_pf[0] > 0.0001:
                     min_dist_pc_pf = sorted_dist_pc_pf[0].item()
                 # Add sum
                 sum_dist_pc_pn = sum_dist_pc_pn + torch.mean(dist_pc_pn).item()
@@ -235,4 +235,4 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
 
 
 if __name__ == '__main__':
-    bagnet_process(training=True, visualize=False, visualize_trainloader=False, cluster=False, cluster_training=False, cluster_testing=False)
+    bagnet_process(training=False, visualize=True, visualize_trainloader=True, cluster=False, cluster_training=False, cluster_testing=False)
