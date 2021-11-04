@@ -50,14 +50,14 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, use_c
                 x_tensor = transforms.ToTensor()(x).unsqueeze_(0) #shape (h, w)
                 img_patch = x_tensor[0,:,patch_idx[0]*8:min(224,patch_idx[0]*8+patchsize),patch_idx[1]*8:min(224,patch_idx[1]*8+patchsize)] 
                 img_patch = transforms.ToPILImage()(img_patch)
-                img_patch.save(os.path.join(near_imgs_dir, '%s_%s.png'%(str(pn.split('/')[-1].split('.png')[0]),str(f"{similarity:.3f}"))))
+                img_patch.save(os.path.join(near_imgs_dir, '%s_%s.png'%(str(f"{similarity:.3f}"), str(pn.split('/')[-1].split('.png')[0]))))
 
 
 # given a certain patch, find patches in the dataset which are similar (in this case: cosine similarity > 0.9)
 def find_similar(current_patch, model, test_loader: DataLoader, device, args: argparse.Namespace, use_cosine: bool):
     nearest_patches = []
     sim_threshold = 0.9
-    dist_threshold = 0.8
+    dist_threshold = 0.5
     imgs = test_loader.dataset.imgs
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
