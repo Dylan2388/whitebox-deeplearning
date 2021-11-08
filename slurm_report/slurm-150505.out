@@ -2,6 +2,7 @@
 Log dir:  ./runs/run_bagnet
 Num classes (k) =  200
 ##################################
+lr=0.01
 EPOCH 0:
 Near Patch Distance:
 Max: 1.599

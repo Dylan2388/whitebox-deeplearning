@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from PIL import Image
 import pickle
 import joblib
-from sklearn.cluster import AffinityPropagation, KMeans, MeanShift
+from sklearn.cluster import AffinityPropagation, KMeans, MeanShift, DBSCAN
 
 # 1. get output from bagnet 128-D vector (patch - cluster by patch)
 # 2. feed the vector to clustering method
@@ -37,7 +37,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs
+    imgs = dataLoader.dataset.imgs[0:2]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -100,10 +100,10 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         print("Finish training data.", flush=True)
         return
 
-    ####### Reduce training dataset
-    ####### Separate training and testing phase
-    ####### Add print statement
-    ####### Add visualization of training data
+    ###### Suitable Threshold: between 0.5->0.8
+    ###### Change clustering method: 
+    ###### Test with decision tree:
+
 
 
     ####### NEXT WEEK: Search for efficient clustering method
@@ -162,4 +162,8 @@ def k_mean(input, **kwargs):
 
 def mean_shift(input, **kwargs):
     model = MeanShift().fit(input)
+    return model
+
+def dbscan(input, eps, **kwargs):
+    model = DBSCAN(eps=3).fit(input)
     return model
