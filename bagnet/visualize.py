@@ -32,7 +32,7 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, use_c
         # Perform a forward pass through the network
         img_enc = model.forward(xs)
 
-        for p in range(30):
+        for p in range(50):
             near_imgs_dir = os.path.join(dir, str(p))
             if not os.path.exists(near_imgs_dir):
                 os.makedirs(near_imgs_dir)

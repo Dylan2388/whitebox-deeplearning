@@ -37,7 +37,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs[0:2]
+    imgs = dataLoader.dataset.imgs
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -92,6 +92,10 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         if clusterMethod == 2:
             cluster_model = mean_shift(reshaped_img_enc)
             model_name = "mean_shift.pkl"
+        if clusterMethod == 3:
+            eps = 0.6
+            cluster_model = dbscan(reshaped_img_enc, eps=eps)
+            model_name = "dbscan.pkl"
         
         path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
         if not os.path.exists(path):

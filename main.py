@@ -221,11 +221,13 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
         # else:
         #     folder_name = "visualize_euclidean"
         show_triplets(bagnet, data, folder_name, device, use_cosine, all_args)
+        print("Finish Visualization")
+        print("#################################")
 
     if cluster:
         load_model(bagnet, model_path, device)
         folder_name = "visualize_clustering"
-        cluster_method = 1
+        cluster_method = 3
         if cluster_training:
             clustering(bagnet, out_channel, trainloader, folder_name, device, all_args, cluster_method, True)
         if cluster_testing:
@@ -235,4 +237,4 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
 
 
 if __name__ == '__main__':
-    bagnet_process(training=False, visualize=True, visualize_trainloader=False, cluster=False, cluster_training=True, cluster_testing=False)
+    bagnet_process(training=False, visualize=True, visualize_trainloader=True, cluster=True, cluster_training=True, cluster_testing=False)
