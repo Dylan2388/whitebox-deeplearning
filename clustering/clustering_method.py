@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from PIL import Image
 import pickle
 import joblib
-from sklearn.cluster import AffinityPropagation, KMeans, MeanShift, DBSCAN
+from sklearn.cluster import AffinityPropagation, KMeans, MeanShift, DBSCAN, OPTICS
 
 # 1. get output from bagnet 128-D vector (patch - cluster by patch)
 # 2. feed the vector to clustering method
@@ -169,5 +169,5 @@ def mean_shift(input, **kwargs):
     return model
 
 def dbscan(input, eps, **kwargs):
-    model = DBSCAN(eps=3).fit(input)
+    model = DBSCAN(eps=eps).fit(input)
     return model
