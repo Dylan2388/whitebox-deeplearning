@@ -98,7 +98,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             model_name = "dbscan.pkl"
         if clusterMethod == 4:
             eps = 0.6
-            clusterMethod = optics(reshaped_img_enc, eps=eps)
+            cluster_model = optics(reshaped_img_enc, eps=eps)
             model_name = "optics.pkl"
         
         path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
