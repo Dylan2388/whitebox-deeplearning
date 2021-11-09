@@ -96,6 +96,10 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             eps = 0.6
             cluster_model = dbscan(reshaped_img_enc, eps=eps)
             model_name = "dbscan.pkl"
+        if clusterMethod == 4:
+            eps = 0.6
+            clusterMethod = optics(reshaped_img_enc, eps=eps)
+            model_name = "optics.pkl"
         
         path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
         if not os.path.exists(path):
@@ -170,4 +174,8 @@ def mean_shift(input, **kwargs):
 
 def dbscan(input, eps, **kwargs):
     model = DBSCAN(eps=eps).fit(input)
+    return model
+
+def optics(input, eps, **kwargs):
+    model = OPTICS(min_samples=10, max_eps=eps, metric="euclidean")
     return model
