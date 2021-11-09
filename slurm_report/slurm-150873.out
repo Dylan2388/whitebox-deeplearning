@@ -1,0 +1,59 @@
+	Adding nVidia Cuda Toolkit 10.2 (Patch2)
+Log dir:  ./runs/run_bagnet
+Num classes (k) =  200
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+# near:  15
+# near:  0
+# near:  12
+# near:  7
+# near:  82
+# near:  10
+# near:  1363
+# near:  4
+# near:  10
+# near:  102
+# near:  5
+# near:  3
+# near:  54
+# near:  9
+# near:  74
+# near:  76
+# near:  133
+# near:  514
+# near:  0
+# near:  0
+# near:  0
+# near:  49
+# near:  100
+# near:  282
+# near:  0
+# near:  414
+# near:  38
+# near:  0
+# near:  16
+# near:  265
+# near:  1
+# near:  1
+# near:  0
+# near:  281
+# near:  342
+# near:  11
+# near:  0
+# near:  4
+# near:  15
+# near:  18
+# near:  0
+# near:  1384
+# near:  332
+# near:  1240
+# near:  97
+# near:  356
+# near:  1
+# near:  319
+# near:  97
+# near:  137
+Finish Visualization
+#################################
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Finish encoding data. Start Training...
+/tmp/slurmd/job150873/slurm_script: line 7: 486041 Killed                  python main.py
