@@ -1,0 +1,13 @@
+	Adding nVidia Cuda Toolkit 10.2 (Patch2)
+Log dir:  ./runs/run_bagnet
+Num classes (k) =  200
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
+Finish encoding data. Start Training...
+Traceback (most recent call last):
+  File "main.py", line 240, in <module>
+    bagnet_process(training=False, visualize=False, visualize_trainloader=True, cluster=True, cluster_training=True, cluster_testing=False)
+  File "main.py", line 232, in bagnet_process
+    clustering(bagnet, out_channel, trainloader, folder_name, device, all_args, cluster_method, True)
+  File "/home/s2845016/projects/whitebox-deeplearning/clustering/clustering_method.py", line 107, in clustering
+    save_model(cluster_model, os.path.join(path,model_name))
+UnboundLocalError: local variable 'cluster_model' referenced before assignment
