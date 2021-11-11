@@ -237,4 +237,4 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
 
 
 if __name__ == '__main__':
-    bagnet_process(training=False, visualize=False, visualize_trainloader=True, cluster=True, cluster_training=False, cluster_testing=True)
+    bagnet_process(training=False, visualize=False, visualize_trainloader=True, cluster=True, cluster_training=True, cluster_testing=False)
