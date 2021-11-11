@@ -231,10 +231,10 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
         if cluster_training:
             clustering(bagnet, out_channel, trainloader, folder_name, device, all_args, cluster_method, True)
         if cluster_testing:
-            model_name = "mean_shift.pkl"
+            model_name = "optic.pkl"
             model_path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/" + model_name)
             clustering(bagnet, out_channel, test_loader, folder_name, device, all_args, cluster_method, False, model_path)
 
 
 if __name__ == '__main__':
-    bagnet_process(training=False, visualize=False, visualize_trainloader=True, cluster=True, cluster_training=True, cluster_testing=False)
+    bagnet_process(training=False, visualize=False, visualize_trainloader=True, cluster=True, cluster_training=False, cluster_testing=True)
