@@ -78,10 +78,11 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
                 ######## dictionary or 2nd list
                 c += 1
         #### [dataset_size*24*24, 128]
-    print("Finish encoding data. Start Training...", flush=True)
+    
 
     ############## Training clustering model
     if training:
+        print("Finish encoding data. Start Training...", flush=True)
         #### shape [i*24*24]
         if clusterMethod == 0:
             cluster_model = affinity_progapation(reshaped_img_enc)
@@ -98,15 +99,15 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             model_name = "dbscan.pkl"
         if clusterMethod == 4:
             eps = 0.6
-            cluster_model = optics(reshaped_img_enc, eps=eps)
-            model_name = "optics.pkl"
+            labels = optics(reshaped_img_enc, eps=eps)
+            # model_name = "optics.pkl"
         
-        path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
-        if not os.path.exists(path):
-            os.makedirs(path)
-        save_model(cluster_model, os.path.join(path,model_name))
+        # path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
+        # if not os.path.exists(path):
+        #     os.makedirs(path)
+        # save_model(cluster_model, os.path.join(path,model_name))
         print("Finish training data.", flush=True)
-        return
+        # return
 
     ###### Suitable Threshold: between 0.5->0.8
     ###### Change clustering method: 
@@ -118,9 +119,9 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
     ####### CONFIRM BAGNET WORKS OR NOT????????
 
     ############### Testing clustering model
-    if not training:
-        cluster_model = load_model(model_path)
-        labels = cluster_model.predict(reshaped_img_enc)
+    # if not training:
+        # cluster_model = load_model(model_path)
+        # labels = cluster_model.predict(reshaped_img_enc)
         unique, count = np.unique(labels, return_counts=True)
 
         groups = [[] for _ in range(cluster_model.cluster_centers_.shape[0])]
@@ -177,5 +178,5 @@ def dbscan(input, eps, **kwargs):
     return model
 
 def optics(input, eps, **kwargs):
-    model = OPTICS(min_samples=10, max_eps=eps, metric="euclidean")
-    return model
+    output = OPTICS(min_samples=10, max_eps=eps, metric="euclidean").fit_predict(input)
+    return output
