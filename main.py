@@ -229,7 +229,7 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
         folder_name = "visualize_clustering"
         cluster_method = 4
         if cluster_training:
-            clustering(bagnet, out_channel, trainloader, folder_name, device, all_args, cluster_method, True)
+            clustering(bagnet, out_channel, test_loader, folder_name, device, all_args, cluster_method, True)
         if cluster_testing:
             model_name = "optics.pkl"
             model_path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/" + model_name)
