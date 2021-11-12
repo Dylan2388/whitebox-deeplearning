@@ -100,7 +100,7 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
     trainloader, projectloader, test_loader, classes, num_channels = get_dataloaders(all_args)
 
     # Number of output channel
-    out_channel = 128
+    out_channel = 64
     bagnet = bagnet33(device, pretrained=True, out_channel=out_channel)
     bagnet.to(device)
 
@@ -237,4 +237,4 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
 
 
 if __name__ == '__main__':
-    bagnet_process(training=True, visualize=False, visualize_trainloader=False, cluster=False, cluster_training=True, cluster_testing=False)
+    bagnet_process(training=False, visualize=False, visualize_trainloader=False, cluster=True, cluster_training=True, cluster_testing=False)

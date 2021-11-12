@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from PIL import Image
 import pickle
 import joblib
-from sklearn.cluster import AffinityPropagation, KMeans, MeanShift, DBSCAN, OPTICS
+from sklearn.cluster import AffinityPropagation, KMeans, MeanShift, DBSCAN, OPTICS, Birch
 
 # 1. get output from bagnet 128-D vector (patch - cluster by patch)
 # 2. feed the vector to clustering method
