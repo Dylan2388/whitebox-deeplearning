@@ -227,7 +227,7 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
     if cluster:
         load_model(bagnet, model_path, device)
         folder_name = "visualize_clustering"
-        cluster_method = 4
+        cluster_method = 5
         if cluster_training:
             clustering(bagnet, out_channel, trainloader, folder_name, device, all_args, cluster_method, True)
         if cluster_testing:
