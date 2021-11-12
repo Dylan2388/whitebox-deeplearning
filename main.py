@@ -100,7 +100,7 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
     trainloader, projectloader, test_loader, classes, num_channels = get_dataloaders(all_args)
 
     # Number of output channel
-    out_channel = 64
+    out_channel = 128
     bagnet = bagnet33(device, pretrained=True, out_channel=out_channel)
     bagnet.to(device)
 
