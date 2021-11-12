@@ -101,13 +101,16 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             eps = 0.6
             labels = optics(reshaped_img_enc, eps=eps)
             # model_name = "optics.pkl"
+        if clusterMethod == 5:
+            cluster_model = birch(reshaped_img_enc)
+            model_name = "birch.pkl"
         
-        # path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
-        # if not os.path.exists(path):
-        #     os.makedirs(path)
-        # save_model(cluster_model, os.path.join(path,model_name))
+        path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
+        if not os.path.exists(path):
+            os.makedirs(path)
+        save_model(cluster_model, os.path.join(path,model_name))
         print("Finish training data.", flush=True)
-        # return
+        return
 
     ###### Suitable Threshold: between 0.5->0.8
     ###### Change clustering method: 
@@ -119,9 +122,9 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
     ####### CONFIRM BAGNET WORKS OR NOT????????
 
     ############### Testing clustering model
-    # if not training:
-        # cluster_model = load_model(model_path)
-        # labels = cluster_model.predict(reshaped_img_enc)
+    if not training:
+        cluster_model = load_model(model_path)
+        labels = cluster_model.predict(reshaped_img_enc)
         unique, count = np.unique(labels, return_counts=True)
 
         groups = [[] for _ in range(cluster_model.cluster_centers_.shape[0])]
@@ -180,3 +183,7 @@ def dbscan(input, eps, **kwargs):
 def optics(input, eps, **kwargs):
     output = OPTICS(min_samples=10, max_eps=eps, metric="euclidean").fit_predict(input)
     return output
+
+def birch(input, **kwargs):
+    model = Birch(n_clusters=None).fit(input)
+    return model
