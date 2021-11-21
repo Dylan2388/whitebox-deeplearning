@@ -3,3 +3,4 @@ Log dir:  ./runs/run_bagnet
 Num classes (k) =  200
 Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder64.pth.
 Finish encoding data. Start Training...
+slurmstepd-ctit083: error: *** JOB 151108 ON ctit083 CANCELLED AT 2021-11-18T11:28:37 ***
