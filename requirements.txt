@@ -7,3 +7,4 @@ tqdm
 scipy
 matplotlib
 scikit-learn
+faiss-gpu
