@@ -11,6 +11,7 @@ import joblib
 import sys
 import time
 from sklearn.cluster import AffinityPropagation, KMeans, MeanShift, DBSCAN, OPTICS, Birch
+import faiss
 
 # 1. get output from bagnet 128-D vector (patch - cluster by patch)
 # 2. feed the vector to clustering method
@@ -106,6 +107,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             labels = optics(reshaped_img_enc, eps=eps)
             # model_name = "optics.pkl"
         if clusterMethod == 5:
+            reshaped_img_enc = faiss_array(reshaped_img_enc)
             start_time = time.time()
             cluster_model = birch(reshaped_img_enc)
             print("--- BIRCH: %s seconds ---" % (time.time() - start_time))
@@ -194,3 +196,8 @@ def optics(input, eps, **kwargs):
 def birch(input, **kwargs):
     model = Birch(n_clusters=None).fit(input)
     return model
+
+def faiss_array(input, d, **kwargs):
+    index = faiss.IndexFlatL2(d)
+    index.add(input)
+    return index
