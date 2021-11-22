@@ -199,5 +199,5 @@ def birch(input, **kwargs):
 
 def faiss_array(input, d, **kwargs):
     index = faiss.IndexFlatL2(d)
-    index.add(input)
+    index.add(input.astype('float32'))
     return index
