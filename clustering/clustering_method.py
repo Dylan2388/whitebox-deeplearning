@@ -107,9 +107,9 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             labels = optics(reshaped_img_enc, eps=eps)
             # model_name = "optics.pkl"
         if clusterMethod == 5:
-            reshaped_img_enc = faiss_array(reshaped_img_enc)
+            reshaped_img_enc = faiss_array(reshaped_img_enc, 128)
             start_time = time.time()
-            cluster_model = birch(reshaped_img_enc)
+            cluster_model = birch(reshaped_img_enc, )
             print("--- BIRCH(FAISS): %s seconds ---" % (time.time() - start_time))
             model_name = "birch.pkl"
         
