@@ -40,7 +40,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs
+    imgs = dataLoader.dataset.imgs[0:200]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -110,7 +110,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             reshaped_img_enc = faiss_array(reshaped_img_enc)
             start_time = time.time()
             cluster_model = birch(reshaped_img_enc)
-            print("--- BIRCH: %s seconds ---" % (time.time() - start_time))
+            print("--- BIRCH(FAISS): %s seconds ---" % (time.time() - start_time))
             model_name = "birch.pkl"
         
         path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
