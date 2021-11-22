@@ -11,7 +11,7 @@ import joblib
 import sys
 import time
 from sklearn.cluster import AffinityPropagation, KMeans, MeanShift, DBSCAN, OPTICS, Birch
-import faiss
+# import faiss
 
 # 1. get output from bagnet 128-D vector (patch - cluster by patch)
 # 2. feed the vector to clustering method
@@ -88,16 +88,20 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         print("Finish encoding data. Start Training...", flush=True)
         #### shape [i*24*24]
         if clusterMethod == 0:
+            start_time = time.time()
             cluster_model = affinity_progapation(reshaped_img_enc)
+            print("--- Affinity Propagation: %s seconds ---" % (time.time() - start_time))
             model_name = "affinity_progapation.pkl"
         if clusterMethod == 1:
             start_time = time.time()
             # cluster_model = k_mean(reshaped_img_enc)
             faiss_array(reshaped_img_enc, 128)
-            print("--- K-mean FAISS: %s seconds ---" % (time.time() - start_time))
+            print("--- K-mean (FAISS): %s seconds ---" % (time.time() - start_time))
             model_name = "k_mean.pkl"
         if clusterMethod == 2:
+            start_time = time.time()
             cluster_model = mean_shift(reshaped_img_enc)
+            print("--- Mean Shift: %s seconds ---" % (time.time() - start_time))
             model_name = "mean_shift.pkl"
         if clusterMethod == 3:
             eps = 0.6
