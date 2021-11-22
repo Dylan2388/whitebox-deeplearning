@@ -8,6 +8,7 @@ import torch.nn.functional as F
 from PIL import Image
 import pickle
 import joblib
+import sys
 import time
 from sklearn.cluster import AffinityPropagation, KMeans, MeanShift, DBSCAN, OPTICS, Birch
 
@@ -89,7 +90,9 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             cluster_model = affinity_progapation(reshaped_img_enc)
             model_name = "affinity_progapation.pkl"
         if clusterMethod == 1:
+            start_time = time.time()
             cluster_model = k_mean(reshaped_img_enc)
+            print("--- K-mean: %s seconds ---" % (time.time() - start_time))
             model_name = "k_mean.pkl"
         if clusterMethod == 2:
             cluster_model = mean_shift(reshaped_img_enc)
@@ -105,7 +108,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         if clusterMethod == 5:
             start_time = time.time()
             cluster_model = birch(reshaped_img_enc)
-            print("--- %s seconds ---" % (time.time() - start_time))
+            print("--- BIRCH: %s seconds ---" % (time.time() - start_time))
             model_name = "birch.pkl"
         
         path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
