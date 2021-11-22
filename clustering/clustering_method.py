@@ -114,8 +114,8 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         if clusterMethod == 5:
             # reshaped_img_enc = faiss_array(reshaped_img_enc, 128)
             start_time = time.time()
-            cluster_model = birch(reshaped_img_enc, n_jobs=4)
-            print("--- BIRCH(4-core): %s seconds ---" % (time.time() - start_time))
+            cluster_model = birch(reshaped_img_enc, n_jobs=2)
+            print("--- BIRCH(2-core): %s seconds ---" % (time.time() - start_time))
             model_name = "birch.pkl"
         
         path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
