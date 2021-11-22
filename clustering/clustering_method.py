@@ -95,7 +95,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         if clusterMethod == 1:
             start_time = time.time()
             # cluster_model = k_mean(reshaped_img_enc)
-            faiss_array(reshaped_img_enc, 128)
+            # faiss_array(reshaped_img_enc, 128)
             print("--- K-mean (FAISS): %s seconds ---" % (time.time() - start_time))
             model_name = "k_mean.pkl"
         if clusterMethod == 2:
@@ -202,12 +202,12 @@ def birch(input, **kwargs):
     model = Birch(n_clusters=None).fit(input)
     return model
 
-def faiss_array(input, d, **kwargs):
-    # index = faiss.IndexFlatL2(d)
-    # index.add(input.astype('float32'))
-    ncentroids = 8
-    niter = 300
-    verbose = True
-    kmeans = faiss.Kmeans(d, ncentroids, niter=niter, verbose=verbose)
-    kmeans.train(input)
-    return None
+# def faiss_array(input, d, **kwargs):
+#     # index = faiss.IndexFlatL2(d)
+#     # index.add(input.astype('float32'))
+#     ncentroids = 8
+#     niter = 300
+#     verbose = True
+#     kmeans = faiss.Kmeans(d, ncentroids, niter=niter, verbose=verbose)
+#     kmeans.train(input)
+#     return None
