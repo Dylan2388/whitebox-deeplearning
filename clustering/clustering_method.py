@@ -92,8 +92,9 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             model_name = "affinity_progapation.pkl"
         if clusterMethod == 1:
             start_time = time.time()
-            cluster_model = k_mean(reshaped_img_enc)
-            print("--- K-mean: %s seconds ---" % (time.time() - start_time))
+            # cluster_model = k_mean(reshaped_img_enc)
+            faiss_array(reshaped_img_enc, 128)
+            print("--- K-mean FAISS: %s seconds ---" % (time.time() - start_time))
             model_name = "k_mean.pkl"
         if clusterMethod == 2:
             cluster_model = mean_shift(reshaped_img_enc)
@@ -107,9 +108,9 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             labels = optics(reshaped_img_enc, eps=eps)
             # model_name = "optics.pkl"
         if clusterMethod == 5:
-            reshaped_img_enc = faiss_array(reshaped_img_enc, 128)
+            # reshaped_img_enc = faiss_array(reshaped_img_enc, 128)
             start_time = time.time()
-            cluster_model = birch(reshaped_img_enc, )
+            cluster_model = birch(reshaped_img_enc)
             print("--- BIRCH(FAISS): %s seconds ---" % (time.time() - start_time))
             model_name = "birch.pkl"
         
@@ -198,6 +199,11 @@ def birch(input, **kwargs):
     return model
 
 def faiss_array(input, d, **kwargs):
-    index = faiss.IndexFlatL2(d)
-    index.add(input.astype('float32'))
-    return index
+    # index = faiss.IndexFlatL2(d)
+    # index.add(input.astype('float32'))
+    ncentroids = 8
+    niter = 300
+    verbose = True
+    kmeans = faiss.Kmeans(d, ncentroids, niter=niter, verbose=verbose)
+    kmeans.train(input)
+    return None
