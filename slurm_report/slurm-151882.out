@@ -3,5 +3,9 @@ Log dir:  ./runs/run_bagnet
 Num classes (k) =  200
 Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder128.pth.
 Finish encoding data. Start Training...
+
+#### 200 images
+#### O(n^2) -> 10 days
+#### time 1 days
 --- BIRCH(1-core): 40.89207077026367 seconds ---
 Finish training data.

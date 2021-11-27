@@ -3,5 +3,7 @@ Log dir:  ./runs/run_bagnet
 Num classes (k) =  200
 Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder128.pth.
 Finish encoding data. Start Training...
+
+O(i*c*n*d) -> linear increasing
 --- K-mean: 1391.3023445606232 seconds ---
 Finish training data.

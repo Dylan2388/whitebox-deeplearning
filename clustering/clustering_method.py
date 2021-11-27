@@ -58,6 +58,8 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
     reshaped_img_enc = np.empty([D1*D2*D3, input_channel])
     c = 0
 
+    
+    #### skipping patches
     for i, image in enumerate(imgs):
         img = Image.open(image[0])
         if len(img.getbands()) != 3:
@@ -75,13 +77,19 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
 
         # img_id = i*24*24 + j*24 + k
         for j in range(img_shape[1]):
+            if j % 2 == 0:
+                continue
             for k in range(img_shape[2]):
+                if k % 2 == 0:
+                    continue
                 reshaped_img_enc[c] = img_enc[:,j,k]
                 ######## save the location as tuple
                 ######## dictionary or 2nd list
                 c += 1
-        #### [dataset_size*24*24, 128]
+            #### define dictionary of output
     
+    ####### TRAIN BIRCH WITH 25% dataset
+    ####### USE K_MEAN MODEL TO FIT IN DECISION TREE    
 
     ############## Training clustering model
     if training:
@@ -93,10 +101,12 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             print("--- Affinity Propagation: %s seconds ---" % (time.time() - start_time))
             model_name = "affinity_progapation.pkl"
         if clusterMethod == 1:
+            ### Decide number of K to clustering
+            ### Distance: 0.6
+            ### Loop for patches, if distance >.6, new cluster
+            
             start_time = time.time()
-            # cluster_model = k_mean(reshaped_img_enc)
-            # faiss_array(reshaped_img_enc, 128)
-            print("--- K-mean (FAISS): %s seconds ---" % (time.time() - start_time))
+            print("--- K-mean : %s seconds ---" % (time.time() - start_time))
             model_name = "k_mean.pkl"
         if clusterMethod == 2:
             start_time = time.time()
@@ -114,8 +124,8 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         if clusterMethod == 5:
             # reshaped_img_enc = faiss_array(reshaped_img_enc, 128)
             start_time = time.time()
-            cluster_model = birch(reshaped_img_enc, n_jobs=2)
-            print("--- BIRCH(2-core): %s seconds ---" % (time.time() - start_time))
+            cluster_model = birch(reshaped_img_enc, n_jobs=32)
+            print("--- BIRCH(1-core): %s seconds ---" % (time.time() - start_time))
             model_name = "birch.pkl"
         
         path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
@@ -169,7 +179,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         return
 
 def save_model(model, path):
-    sys.setrecursionlimit(10000)
+    sys.setrecursionlimit(50000)
     pickle.dump(model, open(path, 'wb'), pickle.HIGHEST_PROTOCOL)
 
 def load_model(path):
