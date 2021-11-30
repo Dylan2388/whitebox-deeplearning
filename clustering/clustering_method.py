@@ -11,6 +11,7 @@ import joblib
 import sys
 import time
 from sklearn.cluster import AffinityPropagation, KMeans, MeanShift, DBSCAN, OPTICS, Birch
+from sklearn.tree import DecisionTreeClassifier
 # import faiss
 
 # 1. get output from bagnet 128-D vector (patch - cluster by patch)
@@ -40,7 +41,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs
+    imgs = dataLoader.dataset.imgs[0:20]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -52,10 +53,12 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
 
 
     ####### init clustered input
+    skip_const = 2
     D1 = len(imgs)
-    D2 = 24
-    D3 = 24
+    D2 = int(24 / skip_const)
+    D3 = int(24 / skip_const)
     reshaped_img_enc = np.empty([D1*D2*D3, input_channel])
+    reshaped_img_enc_pos = [None] * (D1*D2*D3)
     c = 0
 
     
@@ -74,15 +77,17 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         img_enc = img_enc.squeeze(0)
         img_shape = img_enc.shape
         img_enc = img_enc.to(torch.device('cpu'))
+        
 
         # img_id = i*24*24 + j*24 + k
         for j in range(img_shape[1]):
-            if j % 2 == 0:
+            if j % skip_const == 0:
                 continue
             for k in range(img_shape[2]):
-                if k % 2 == 0:
+                if k % skip_const == 0:
                     continue
                 reshaped_img_enc[c] = img_enc[:,j,k]
+                reshaped_img_enc_pos[c] = [i, j, k]
                 ######## save the location as tuple
                 ######## dictionary or 2nd list
                 c += 1
@@ -106,6 +111,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             ### Loop for patches, if distance >.6, new cluster
             
             start_time = time.time()
+            cluster_model = k_mean(reshaped_img_enc)
             print("--- K-mean : %s seconds ---" % (time.time() - start_time))
             model_name = "k_mean.pkl"
         if clusterMethod == 2:
@@ -128,12 +134,26 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             print("--- BIRCH(1-core): %s seconds ---" % (time.time() - start_time))
             model_name = "birch.pkl"
         
+        
         path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
         if not os.path.exists(path):
             os.makedirs(path)
         save_model(cluster_model, os.path.join(path,model_name))
         print("Finish training data.", flush=True)
+        
+        ###### DECISION TREE CLASSIFIER
+        print("Predict training data...", flush=True)
+        labels = cluster_model.predict(reshaped_img_enc)
+        print("Start Decision Tree Classifier...", flush=True)
+        decision_tree_model = decision_tree(labels, reshaped_img_enc_pos, imgs)
+        model_name = "decision_tree.pkl"
+        ### SAVE DECISION TREE MODEL
+        path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
+        if not os.path.exists(path):
+            os.makedirs(path)
+        save_model(decision_tree_model, os.path.join(path,model_name))
         return
+    
 
     ###### Suitable Threshold: between 0.5->0.8
     ###### Change clustering method: 
@@ -150,16 +170,14 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         labels = cluster_model.predict(reshaped_img_enc)
         unique, count = np.unique(labels, return_counts=True)
 
-        groups = [[] for _ in range(cluster_model.cluster_centers_.shape[0])]
+        groups = [[] for _ in range(len(unique))]
         ##### label: [dataset_size*24*24]
 
         for index, value in enumerate(labels):
-            i = int(int(index) / int(D2*D3))
-            j = int((int(index) % int(D2*D3)) / int(D3))
-            k = int((int(index) % int(D2*D3)) % int(D3))
+            i, j, k = reshaped_img_enc_pos[index]
             groups[value].append([i, j, k])
         
-        for i_group, group in enumerate(groups[0:10]):
+        for i_group, group in enumerate(groups):
             group_dir = os.path.join(dir, str(i_group))
             if not os.path.exists(group_dir):
                 os.makedirs(group_dir)
@@ -176,7 +194,10 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
                 img_patch = x_tensor[0, :, w*8:min(224,w*8+patchsize),h*8:min(224,h*8+patchsize)]
                 img_patch = transforms.ToPILImage()(img_patch)
                 img_patch.save(os.path.join(group_dir, '%s_%s_%s.png'%(str(imgs[i][0].split('/')[-1].split('.png')[0]),str(w),str(h))))
+        
         return
+    
+    
 
 def save_model(model, path):
     sys.setrecursionlimit(50000)
@@ -193,7 +214,7 @@ def affinity_progapation(input, **kwargs):
     return model
 
 def k_mean(input, **kwargs):
-    model = KMeans(random_state=5).fit(input)
+    model = KMeans(n_clusters=9, random_state=5).fit(input)
     return model
 
 def mean_shift(input, **kwargs):
@@ -212,12 +233,17 @@ def birch(input, **kwargs):
     model = Birch(n_clusters=None).fit(input)
     return model
 
-# def faiss_array(input, d, **kwargs):
-#     # index = faiss.IndexFlatL2(d)
-#     # index.add(input.astype('float32'))
-#     ncentroids = 8
-#     niter = 300
-#     verbose = True
-#     kmeans = faiss.Kmeans(d, ncentroids, niter=niter, verbose=verbose)
-#     kmeans.train(input)
-#     return None
+def decision_tree(cluster_label, cluster_label_pos, imgs):
+    ### Birch Model
+    unique, count = np.unique(cluster_label, return_counts=True)
+    d = len(unique)
+    n = len(imgs)
+    x = np.zeros((n, d))
+    y = imgs
+    for c in range(len(cluster_label)):
+        i, _, _ = cluster_label_pos[c]
+        j = cluster_label[c]
+        x[i, j] = 1
+    clf = DecisionTreeClassifier(random_state=0).fit(x, y)
+    return clf
+    
