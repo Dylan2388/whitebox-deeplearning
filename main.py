@@ -100,14 +100,14 @@ def bagnet_process(nn_training=True, visualize=False, visualize_trainloader=True
     trainloader, projectloader, test_loader, classes, num_channels = get_dataloaders(all_args)
 
     # Number of output channel
-    out_channel = 16
+    out_channel = 128
     bagnet = bagnet33(device, pretrained=True, out_channel=out_channel)
     bagnet.to(device)
 
     # YOUR CODE HERE
     # parameters
-    lr = 0.0005
-    epoch_num = 20
+    lr = 0.001
+    epoch_num = 10
     
     optimizer_bagnet = optim.Adam(bagnet.parameters(), lr=lr, weight_decay=0.0001)
     # early stoping initial
@@ -218,7 +218,7 @@ def bagnet_process(nn_training=True, visualize=False, visualize_trainloader=True
         use_cosine = False
         # if use_cosine:
         #     folder_name = "visualize_cosine"
-        # else:
+        # els`e:
         #     folder_name = "visualize_euclidean"
         show_triplets(bagnet, data, folder_name, device, use_cosine, all_args)
         print("Finish Visualization")
@@ -227,7 +227,7 @@ def bagnet_process(nn_training=True, visualize=False, visualize_trainloader=True
     if cluster:
         load_model(bagnet, model_path, device)
         folder_name = "visualize_clustering"
-        cluster_method = 1
+        cluster_method = 3
         if cluster_training:
             clustering(bagnet, out_channel, trainloader, folder_name, device, all_args, cluster_method, True)
         if cluster_testing:
@@ -237,4 +237,4 @@ def bagnet_process(nn_training=True, visualize=False, visualize_trainloader=True
 
 
 if __name__ == '__main__':
-    bagnet_process(nn_training=True, visualize=False, visualize_trainloader=False, cluster=False, cluster_training=False, cluster_testing=False)
+    bagnet_process(nn_training=False, visualize=False, visualize_trainloader=False, cluster=True, cluster_training=True, cluster_testing=False)
