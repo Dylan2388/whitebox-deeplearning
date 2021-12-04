@@ -54,7 +54,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
 
 
     ####### init clustered input
-    skip_const = 3
+    skip_const = 4
     D1 = len(imgs)
     D2 = int(24 / skip_const)
     D3 = int(24 / skip_const)
