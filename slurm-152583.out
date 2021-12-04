@@ -1,0 +1,330 @@
+	Adding nVidia Cuda Toolkit 10.2 (Patch2)
+Log dir:  ./runs/run_bagnet
+Num classes (k) =  200
+##################################
+EPOCH 0:
+Near Patch Distance:
+Max: 1.847
+Min: 0.002
+Mean: 0.975
+---
+Far Patch Distance:
+Max: 1.909
+Min: 0.003
+Mean: 1.319
+---
+Loss: 0.085
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 1:
+Near Patch Distance:
+Max: 1.839
+Min: 0.007
+Mean: 0.946
+---
+Far Patch Distance:
+Max: 1.939
+Min: 0.006
+Mean: 1.312
+---
+Loss: 0.081
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 2:
+Near Patch Distance:
+Max: 1.911
+Min: 0.006
+Mean: 0.916
+---
+Far Patch Distance:
+Max: 1.932
+Min: 0.002
+Mean: 1.296
+---
+Loss: 0.075
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 3:
+Near Patch Distance:
+Max: 1.808
+Min: 0.002
+Mean: 0.888
+---
+Far Patch Distance:
+Max: 1.920
+Min: 0.005
+Mean: 1.280
+---
+Loss: 0.072
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 4:
+Near Patch Distance:
+Max: 1.797
+Min: 0.006
+Mean: 0.872
+---
+Far Patch Distance:
+Max: 1.893
+Min: 0.001
+Mean: 1.255
+---
+Loss: 0.073
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 5:
+Near Patch Distance:
+Max: 1.760
+Min: 0.002
+Mean: 0.846
+---
+Far Patch Distance:
+Max: 1.881
+Min: 0.019
+Mean: 1.240
+---
+Loss: 0.068
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 6:
+Near Patch Distance:
+Max: 1.776
+Min: 0.004
+Mean: 0.829
+---
+Far Patch Distance:
+Max: 1.865
+Min: 0.004
+Mean: 1.226
+---
+Loss: 0.065
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 7:
+Near Patch Distance:
+Max: 1.776
+Min: 0.002
+Mean: 0.816
+---
+Far Patch Distance:
+Max: 1.917
+Min: 0.003
+Mean: 1.219
+---
+Loss: 0.063
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 8:
+Near Patch Distance:
+Max: 1.835
+Min: 0.002
+Mean: 0.814
+---
+Far Patch Distance:
+Max: 1.910
+Min: 0.009
+Mean: 1.222
+---
+Loss: 0.062
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 9:
+Near Patch Distance:
+Max: 1.738
+Min: 0.002
+Mean: 0.806
+---
+Far Patch Distance:
+Max: 1.868
+Min: 0.000
+Mean: 1.216
+---
+Loss: 0.061
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 10:
+Near Patch Distance:
+Max: 1.749
+Min: 0.016
+Mean: 0.795
+---
+Far Patch Distance:
+Max: 1.866
+Min: 0.002
+Mean: 1.204
+---
+Loss: 0.061
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 11:
+Near Patch Distance:
+Max: 1.696
+Min: 0.011
+Mean: 0.784
+---
+Far Patch Distance:
+Max: 1.868
+Min: 0.003
+Mean: 1.200
+---
+Loss: 0.060
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 12:
+Near Patch Distance:
+Max: 1.662
+Min: 0.004
+Mean: 0.784
+---
+Far Patch Distance:
+Max: 1.861
+Min: 0.002
+Mean: 1.199
+---
+Loss: 0.058
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 13:
+Near Patch Distance:
+Max: 1.698
+Min: 0.002
+Mean: 0.768
+---
+Far Patch Distance:
+Max: 1.848
+Min: 0.002
+Mean: 1.188
+---
+Loss: 0.056
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 14:
+Near Patch Distance:
+Max: 1.773
+Min: 0.011
+Mean: 0.767
+---
+Far Patch Distance:
+Max: 1.881
+Min: 0.003
+Mean: 1.191
+---
+Loss: 0.055
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 15:
+Near Patch Distance:
+Max: 1.693
+Min: 0.001
+Mean: 0.768
+---
+Far Patch Distance:
+Max: 1.847
+Min: 0.001
+Mean: 1.201
+---
+Loss: 0.053
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 16:
+Near Patch Distance:
+Max: 1.732
+Min: 0.004
+Mean: 0.755
+---
+Far Patch Distance:
+Max: 1.854
+Min: 0.002
+Mean: 1.193
+---
+Loss: 0.052
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 17:
+Near Patch Distance:
+Max: 1.652
+Min: 0.001
+Mean: 0.755
+---
+Far Patch Distance:
+Max: 1.847
+Min: 0.003
+Mean: 1.183
+---
+Loss: 0.053
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 18:
+Near Patch Distance:
+Max: 1.702
+Min: 0.002
+Mean: 0.751
+---
+Far Patch Distance:
+Max: 1.853
+Min: 0.007
+Mean: 1.192
+---
+Loss: 0.051
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
+Load Model BagNet Successfully
+##################################
+EPOCH 19:
+Near Patch Distance:
+Max: 1.745
+Min: 0.002
+Mean: 0.747
+---
+Far Patch Distance:
+Max: 1.896
+Min: 0.002
+Mean: 1.194
+---
+Loss: 0.048
+/home/s2845016/miniconda3/envs/capitaSelecta/lib/python3.8/site-packages/torchvision/transforms/functional.py:594: UserWarning: torch.lstsq is deprecated in favor of torch.linalg.lstsq and will be removed in a future PyTorch release.
+torch.linalg.lstsq has reversed arguments and does not return the QR decomposition in the returned tuple (although it returns other information about the problem).
+To get the qr decomposition consider using torch.linalg.qr.
+The returned solution in torch.lstsq stored the residuals of the solution in the last m - n columns of the returned value whenever m > n. In torch.linalg.lstsq, the residuals in the field 'residuals' of the returned named tuple.
+The unpacking of the solution, as in
+X, _ = torch.lstsq(B, A).solution[:A.size(1)]
+should be replaced with
+X = torch.linalg.lstsq(A, B).solution (Triggered internally at  /opt/conda/conda-bld/pytorch_1631630815121/work/aten/src/ATen/LegacyTHFunctionsCPU.cpp:389.)
+  res = torch.lstsq(b_matrix, a_matrix)[0]
+Model saved to /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder16.pth.
