@@ -100,14 +100,14 @@ def bagnet_process(nn_training=True, visualize=False, visualize_trainloader=True
     trainloader, projectloader, test_loader, classes, num_channels = get_dataloaders(all_args)
 
     # Number of output channel
-    out_channel = 32
+    out_channel = 16
     bagnet = bagnet33(device, pretrained=True, out_channel=out_channel)
     bagnet.to(device)
 
     # YOUR CODE HERE
     # parameters
-    lr = 0.001
-    epoch_num = 10
+    lr = 0.0005
+    epoch_num = 20
     
     optimizer_bagnet = optim.Adam(bagnet.parameters(), lr=lr, weight_decay=0.0001)
     # early stoping initial
