@@ -128,7 +128,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             start_time = time.time()
             cluster_model = dbscan(reshaped_img_enc, eps=eps)
             print("--- DBScan: %s seconds ---" % (time.time() - start_time))
-            model_name = "dbscan.json"
+            model_name = "dbscan_4.json"
             
             central = dbscan_central(reshaped_img_enc, cluster_model)
             path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
