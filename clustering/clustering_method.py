@@ -41,7 +41,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs[0:20]
+    imgs = dataLoader.dataset.imgs[0:5]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -120,6 +120,11 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             print("--- Mean Shift: %s seconds ---" % (time.time() - start_time))
             model_name = "mean_shift.pkl"
         if clusterMethod == 3:
+            #### compute the mean of the cluster
+            #### use 64-dimension as well
+            #### use 32-dimension as well
+            #### use 16-dimension as well
+            #### -->  
             eps = 0.6
             cluster_model = dbscan(reshaped_img_enc, eps=eps)
             model_name = "dbscan.pkl"
@@ -145,7 +150,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         print("Predict training data...", flush=True)
         labels = cluster_model.predict(reshaped_img_enc)
         print("Start Decision Tree Classifier...", flush=True)
-        decision_tree_model = decision_tree(labels, reshaped_img_enc_pos, imgs)
+        decision_tree_model = decision_tree(cluster_model, labels, reshaped_img_enc_pos, imgs)
         model_name = "decision_tree.pkl"
         ### SAVE DECISION TREE MODEL
         path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
@@ -168,7 +173,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
     if not training:
         cluster_model = load_model(model_path)
         labels = cluster_model.predict(reshaped_img_enc)
-        unique, count = np.unique(labels, return_counts=True)
+        unique, count = np.unique(cluster_model.labels_, return_counts=True)
 
         groups = [[] for _ in range(len(unique))]
         ##### label: [dataset_size*24*24]
@@ -214,7 +219,7 @@ def affinity_progapation(input, **kwargs):
     return model
 
 def k_mean(input, **kwargs):
-    model = KMeans(n_clusters=9, random_state=5).fit(input)
+    model = KMeans(n_clusters=9, random_state=0).fit(input)
     return model
 
 def mean_shift(input, **kwargs):
@@ -233,9 +238,9 @@ def birch(input, **kwargs):
     model = Birch(n_clusters=None).fit(input)
     return model
 
-def decision_tree(cluster_label, cluster_label_pos, imgs):
+def decision_tree(model, cluster_label, cluster_label_pos, imgs):
     ### Birch Model
-    unique, count = np.unique(cluster_label, return_counts=True)
+    unique, count = np.unique(model.labels_, return_counts=True)
     d = len(unique)
     n = len(imgs)
     x = np.zeros((n, d))

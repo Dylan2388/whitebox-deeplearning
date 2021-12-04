@@ -77,7 +77,7 @@ class EarlyStopping:
 #########################
 
 
-def bagnet_process(training=True, visualize=False, visualize_trainloader=True, cluster=True, cluster_training=True, cluster_testing=True):
+def bagnet_process(nn_training=True, visualize=False, visualize_trainloader=True, cluster=True, cluster_training=True, cluster_testing=True):
 
     all_args = get_args()
 
@@ -100,14 +100,14 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
     trainloader, projectloader, test_loader, classes, num_channels = get_dataloaders(all_args)
 
     # Number of output channel
-    out_channel = 128
+    out_channel = 32
     bagnet = bagnet33(device, pretrained=True, out_channel=out_channel)
     bagnet.to(device)
 
     # YOUR CODE HERE
     # parameters
     lr = 0.001
-    epoch_num = 50
+    epoch_num = 10
     
     optimizer_bagnet = optim.Adam(bagnet.parameters(), lr=lr, weight_decay=0.0001)
     # early stoping initial
@@ -124,7 +124,7 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
     model = "bagnet/model/bagnet33_encoder" + str(out_channel) + ".pth"
     model_path = os.path.join(directory, model)
     
-    if training:
+    if nn_training:
         for epoch in range(epoch_num):
 
             if os.path.isfile(model_path):
@@ -237,4 +237,4 @@ def bagnet_process(training=True, visualize=False, visualize_trainloader=True, c
 
 
 if __name__ == '__main__':
-    bagnet_process(training=False, visualize=False, visualize_trainloader=False, cluster=True, cluster_training=True, cluster_testing=False)
+    bagnet_process(nn_training=True, visualize=False, visualize_trainloader=False, cluster=False, cluster_training=False, cluster_testing=False)
