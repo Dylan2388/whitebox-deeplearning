@@ -7,12 +7,12 @@ import torchvision.transforms as transforms
 import torch.nn.functional as F
 from PIL import Image
 import pickle
-import joblib
 import json
 import sys
 import time
 from sklearn.cluster import AffinityPropagation, KMeans, MeanShift, DBSCAN, OPTICS, Birch
 from sklearn.tree import DecisionTreeClassifier
+import pandas as pd
 # import faiss
 
 # 1. get output from bagnet 128-D vector (patch - cluster by patch)
@@ -42,7 +42,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs
+    imgs = dataLoader.dataset.imgs[:5]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -54,7 +54,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
 
 
     ####### init clustered input
-    skip_const = 2
+    skip_const = 4
     D1 = len(imgs)
     D2 = int(24 / skip_const)
     D3 = int(24 / skip_const)
@@ -128,14 +128,14 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             start_time = time.time()
             cluster_model = dbscan(reshaped_img_enc, eps=eps)
             print("--- DBScan: %s seconds ---" % (time.time() - start_time))
-            model_name = "dbscan_2.json"
+            model_name = "dbscan_" + str(skip_const) + "_" + str(eps) +".json"
             
-            central = dbscan_central(reshaped_img_enc, cluster_model)
+            result = dbscan_save(reshaped_img_enc, cluster_model.labels_, reshaped_img_enc_pos, imgs)
             path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
             if not os.path.exists(path):
                 os.makedirs(path)
             with open(os.path.join(path,model_name), 'w') as f:
-                json.dump(central, f)
+                json.dump(result, f)
         if clusterMethod == 4:
             eps = 0.7
             start_time = time.time()
@@ -261,20 +261,20 @@ def decision_tree(model, cluster_label, cluster_label_pos, imgs):
         x[i, j] = 1
     clf = DecisionTreeClassifier(random_state=0).fit(x, y)
     return clf
-    
-def dbscan_central(data, model):
-    labels = model.labels_
-    result = {}
-    groups = [[] for _ in range(max(labels)+1)]
-        ##### label: [dataset_size*24*24]
 
-    for index, value in enumerate(labels):
-        if value != -1:
-            groups[value].append(data[index])
-        
-    for index, value in enumerate(groups):
-        a = [sum(x)/len(x) for x in zip(*value)]
-        result.update({index: a})
-    
+
+############################### DBSCAN prediction:
+
+
+
+
+def dbscan_save(data, label, position, imgs):
+    n = len(label)
+    path = [None] * n
+    c = 0
+    for item in position:
+        path[c] = imgs[item[0]][0]
+        c = c + 1
+    result = {"label": label.tolist(), "data": data.tolist(), "position":position, "path": path}
     return result
     
