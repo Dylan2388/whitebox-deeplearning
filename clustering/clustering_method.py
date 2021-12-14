@@ -42,7 +42,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs
+    imgs = dataLoader.dataset.imgs[:5]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -156,18 +156,24 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         # save_model(cluster_model, os.path.join(path,model_name))
         # print("Finish training data.", flush=True)
         
-        ###### DECISION TREE CLASSIFIER
-        # print("Predict training data...", flush=True)
-        # labels = cluster_model.predict(reshaped_img_enc)
-        # print("Start Decision Tree Classifier...", flush=True)
-        # decision_tree_model = decision_tree(cluster_model, labels, reshaped_img_enc_pos, imgs)
-        # model_name = "decision_tree.pkl"
-        # ### SAVE DECISION TREE MODEL
-        # path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
-        # if not os.path.exists(path):
-        #     os.makedirs(path)
-        # save_model(decision_tree_model, os.path.join(path,model_name))
-        return
+    train_decision_tree = False
+    if train_decision_tree:
+        model_name = "dbscan_4_0.7.json"
+        model_path = "/Users/dylan/Twente/Capita Selecta/project/clustering/model"
+        model = dbscan_load(os.path.join(model_path, model_name))
+        ##### DECISION TREE CLASSIFIER
+        embedded_vector = model["data"]
+        label = model["label"]
+        position = model["position"]
+        image_paths = model["path"]
+        print("Start Decision Tree Classifier...", flush=True)
+        decision_tree_model = decision_tree_dbscan(label, position, image_paths)
+        model_name = "decision_tree.pkl"
+        ### SAVE DECISION TREE MODEL
+        path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
+        if not os.path.exists(path):
+            os.makedirs(path)
+        save_model(decision_tree_model, os.path.join(path,model_name))
     
 
     ###### Suitable Threshold: between 0.5->0.8
@@ -181,14 +187,31 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
 
     ############### Testing clustering model
     if not training:
-        cluster_model = load_model(model_path)
-        labels = cluster_model.predict(reshaped_img_enc)
+        ### Load DBScan Model:
+        model_name = "dbscan_4_0.7.json"
+        model_path = "/Users/dylan/Twente/Capita Selecta/project/clustering/model"
+        model = dbscan_load(os.path.join(model_path, model_name))
+        ##### DECISION TREE CLASSIFIER
+        embedded_vector = model["data"]
+        train_label = model["label"]
+        position = model["position"]
+        image_paths = model["path"]
+        thres = float(model_name.split("_")[-1][:3])
+        
+        
+        ### Predict DBScan label:
+        test_label = [ dbscan_prediction(embedded_vector, train_label, item, thres) for item in reshaped_img_enc]
+        
+        
+        
+        
+        
         unique, count = np.unique(cluster_model.labels_, return_counts=True)
 
         groups = [[] for _ in range(len(unique))]
         ##### label: [dataset_size*24*24]
 
-        for index, value in enumerate(labels):
+        for index, value in enumerate(test_label):
             i, j, k = reshaped_img_enc_pos[index]
             groups[value].append([i, j, k])
         
@@ -210,7 +233,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
                 img_patch = transforms.ToPILImage()(img_patch)
                 img_patch.save(os.path.join(group_dir, '%s_%s_%s.png'%(str(imgs[i][0].split('/')[-1].split('.png')[0]),str(w),str(h))))
         
-        return
+    return
     
     
 
@@ -265,7 +288,34 @@ def decision_tree(model, cluster_label, cluster_label_pos, imgs):
 
 ############################### DBSCAN prediction:
 
+def dbscan_prediction(data, label, input_vector, thres):
+    npdata = np.array(data)
+    npinput = np.array(input_vector)
+    distance = np.linalg.norm(npdata - npinput, axis=1)
+    if min(distance) < thres:
+        index = np.argmin(distance)
+        return label[index]
+    else:
+        return -1
 
+
+def decision_tree_table(label, position, imgs):
+    d = max(label)+2
+    n = len(imgs)
+    x = np.zeros((n, d))
+    y = [ img.split("/")[-2] for img in imgs ]
+    for c in range(len(label)):
+        i, _, _ = position[c]
+        j = label[c]
+        x[i, j] = 1
+    return x, y
+
+
+def decision_tree_dbscan(label, position, imgs):
+    unique_path = list(dict.fromkeys(imgs))
+    x, y = decision_tree_table(label, position, unique_path)
+    clf = DecisionTreeClassifier(random_state=0).fit(x, y)
+    return clf
 
 
 def dbscan_save(data, label, position, imgs):
@@ -277,4 +327,13 @@ def dbscan_save(data, label, position, imgs):
         c = c + 1
     result = {"label": label.tolist(), "data": data.tolist(), "position":position, "path": path}
     return result
+
+
+def dbscan_load(path):
+    result = json.load(open(path, "rb"))
+    return result
+
+
+
+
     

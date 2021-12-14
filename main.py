@@ -229,7 +229,7 @@ def bagnet_process(nn_training=True, visualize=False, visualize_trainloader=True
         folder_name = "visualize_clustering"
         cluster_method = 3
         if cluster_training:
-            clustering(bagnet, out_channel, trainloader, folder_name, device, all_args, cluster_method, True)
+            clustering(bagnet, out_channel, trainloader, folder_name, device, all_args, cluster_method, False)
         if cluster_testing:
             model_name = "birch.pkl"
             model_path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/" + model_name)
@@ -237,4 +237,4 @@ def bagnet_process(nn_training=True, visualize=False, visualize_trainloader=True
 
 
 if __name__ == '__main__':
-    bagnet_process(nn_training=False, visualize=False, visualize_trainloader=False, cluster=True, cluster_training=True, cluster_testing=False)
+    bagnet_process(nn_training=False, visualize=False, visualize_trainloader=False, cluster=True, cluster_training=False, cluster_testing=True)
