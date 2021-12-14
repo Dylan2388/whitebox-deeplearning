@@ -4,4 +4,4 @@ data/
 __pycache__/
 .vscode/
 git_token.txt 
-clustering/model/
+clustering/model

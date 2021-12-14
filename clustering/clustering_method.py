@@ -42,7 +42,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs[:5]
+    imgs = dataLoader.dataset.imgs
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -156,9 +156,9 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         # save_model(cluster_model, os.path.join(path,model_name))
         # print("Finish training data.", flush=True)
         
-    train_decision_tree = False
+    train_decision_tree = True
     if train_decision_tree:
-        model_name = "dbscan_4_0.7.json"
+        model_name = "dbscan_4_0.70.json"
         model_path = "/Users/dylan/Twente/Capita Selecta/project/clustering/model"
         model = dbscan_load(os.path.join(model_path, model_name))
         ##### DECISION TREE CLASSIFIER
@@ -188,7 +188,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
     ############### Testing clustering model
     if not training:
         ### Load DBScan Model:
-        model_name = "dbscan_4_0.7.json"
+        model_name = "dbscan_4_0.70.json"
         model_path = "/Users/dylan/Twente/Capita Selecta/project/clustering/model"
         model = dbscan_load(os.path.join(model_path, model_name))
         ##### DECISION TREE CLASSIFIER
@@ -202,36 +202,45 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         ### Predict DBScan label:
         test_label = [ dbscan_prediction(embedded_vector, train_label, item, thres) for item in reshaped_img_enc]
         
+        ### Load Decision Tree Model
+        decision_model_name = "decision_tree.pkl"
+        clf = load_model(os.path.join(model_path, decision_model_name))
+        
+        ### Predict using decision tree
+        real_y = [ img.split("/")[-2] for img in imgs ]
+        x = decision_tree_table(test_label, reshaped_img_enc_pos, real_y)
+        pred = clf.predict(x)
+        score = clf.score(x)
         
         
         
         
-        unique, count = np.unique(cluster_model.labels_, return_counts=True)
+        # unique, count = np.unique(cluster_model.labels_, return_counts=True)
 
-        groups = [[] for _ in range(len(unique))]
-        ##### label: [dataset_size*24*24]
+        # groups = [[] for _ in range(len(unique))]
+        # ##### label: [dataset_size*24*24]
 
-        for index, value in enumerate(test_label):
-            i, j, k = reshaped_img_enc_pos[index]
-            groups[value].append([i, j, k])
+        # for index, value in enumerate(test_label):
+        #     i, j, k = reshaped_img_enc_pos[index]
+        #     groups[value].append([i, j, k])
         
-        for i_group, group in enumerate(groups):
-            group_dir = os.path.join(dir, str(i_group))
-            if not os.path.exists(group_dir):
-                os.makedirs(group_dir)
-            else:
-                shutil.rmtree(group_dir)
-                os.makedirs(group_dir)
+        # for i_group, group in enumerate(groups):
+        #     group_dir = os.path.join(dir, str(i_group))
+        #     if not os.path.exists(group_dir):
+        #         os.makedirs(group_dir)
+        #     else:
+        #         shutil.rmtree(group_dir)
+        #         os.makedirs(group_dir)
 
-            for item in group:
-                i = item[0]
-                w = item[1]
-                h = item[2]
-                x = Image.open(imgs[i][0]).resize((224,224))
-                x_tensor = transforms.ToTensor()(x).unsqueeze_(0) #shape (h, w)
-                img_patch = x_tensor[0, :, w*8:min(224,w*8+patchsize),h*8:min(224,h*8+patchsize)]
-                img_patch = transforms.ToPILImage()(img_patch)
-                img_patch.save(os.path.join(group_dir, '%s_%s_%s.png'%(str(imgs[i][0].split('/')[-1].split('.png')[0]),str(w),str(h))))
+        #     for item in group:
+        #         i = item[0]
+        #         w = item[1]
+        #         h = item[2]
+        #         x = Image.open(imgs[i][0]).resize((224,224))
+        #         x_tensor = transforms.ToTensor()(x).unsqueeze_(0) #shape (h, w)
+        #         img_patch = x_tensor[0, :, w*8:min(224,w*8+patchsize),h*8:min(224,h*8+patchsize)]
+        #         img_patch = transforms.ToPILImage()(img_patch)
+        #         img_patch.save(os.path.join(group_dir, '%s_%s_%s.png'%(str(imgs[i][0].split('/')[-1].split('.png')[0]),str(w),str(h))))
         
     return
     
@@ -288,6 +297,8 @@ def decision_tree(model, cluster_label, cluster_label_pos, imgs):
 
 ############################### DBSCAN prediction:
 
+
+
 def dbscan_prediction(data, label, input_vector, thres):
     npdata = np.array(data)
     npinput = np.array(input_vector)
@@ -303,19 +314,23 @@ def decision_tree_table(label, position, imgs):
     d = max(label)+2
     n = len(imgs)
     x = np.zeros((n, d))
-    y = [ img.split("/")[-2] for img in imgs ]
     for c in range(len(label)):
         i, _, _ = position[c]
         j = label[c]
         x[i, j] = 1
-    return x, y
+    return x
 
 
 def decision_tree_dbscan(label, position, imgs):
     unique_path = list(dict.fromkeys(imgs))
-    x, y = decision_tree_table(label, position, unique_path)
+    y = [ img.split("/")[-2] for img in imgs ]
+    x = decision_tree_table(label, position, unique_path)
     clf = DecisionTreeClassifier(random_state=0).fit(x, y)
     return clf
+
+def decision_tree_dbscan_predict(model, x):
+    pred = model.predict(x)
+    return pred
 
 
 def dbscan_save(data, label, position, imgs):
