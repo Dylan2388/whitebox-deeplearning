@@ -42,7 +42,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs
+    imgs = dataLoader.dataset.imgs[:100]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -156,7 +156,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         # save_model(cluster_model, os.path.join(path,model_name))
         # print("Finish training data.", flush=True)
         
-    train_decision_tree = True
+    train_decision_tree = False
     if train_decision_tree:
         model_name = "dbscan_4_0.70.json"
         model_path = "/Users/dylan/Twente/Capita Selecta/project/clustering/model"
@@ -200,7 +200,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         
         
         ### Predict DBScan label:
-        test_label = [ dbscan_prediction(embedded_vector, train_label, item, thres) for item in reshaped_img_enc]
+        test_label = dbscan_prediction(embedded_vector, train_label, reshaped_img_enc, thres)
         
         ### Load Decision Tree Model
         decision_model_name = "decision_tree.pkl"
@@ -211,7 +211,10 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         x = decision_tree_table(test_label, reshaped_img_enc_pos, real_y)
         pred = clf.predict(x)
         score = clf.score(x)
-        
+        print("Prediction:", flush=True)
+        print(pred, flush=True)
+        print("Score: ", flush=True)
+        print(score, flush=True)
         
         
         
@@ -300,14 +303,22 @@ def decision_tree(model, cluster_label, cluster_label_pos, imgs):
 
 
 def dbscan_prediction(data, label, input_vector, thres):
-    npdata = np.array(data)
-    npinput = np.array(input_vector)
-    distance = np.linalg.norm(npdata - npinput, axis=1)
-    if min(distance) < thres:
-        index = np.argmin(distance)
-        return label[index]
-    else:
-        return -1
+    compareMatrix = np.array(data)
+    inputMatrix = np.array(input_vector)
+    z = compareMatrix - inputMatrix[:, None]
+    distance = np.linalg.norm(z, axis=2)
+    
+    n = input_vector.shape[0]
+    min_array = np.min(distance, axis=1)
+    pos_array = np.argmin(distance, axis=1)
+    out_label = [-1] * n
+    for i in range(n):
+        if min_array[i] < thres:
+            index = pos_array[i]
+            out_label[i] = label[index]
+        else:
+            out_label[i] = -1
+    return out_label
 
 
 def decision_tree_table(label, position, imgs):
@@ -328,10 +339,6 @@ def decision_tree_dbscan(label, position, imgs):
     clf = DecisionTreeClassifier(random_state=0).fit(x, y)
     return clf
 
-def decision_tree_dbscan_predict(model, x):
-    pred = model.predict(x)
-    return pred
-
 
 def dbscan_save(data, label, position, imgs):
     n = len(label)
@@ -348,6 +355,36 @@ def dbscan_load(path):
     result = json.load(open(path, "rb"))
     return result
 
+def outputing_train_image(label, position, imgs, dir, patchsize):
+    
+    groups = [[] for _ in range(max(label)+1)]
+    ##### label: [dataset_size*24*24]
+    
+    for index, value in enumerate(label):
+        if value != -1:
+            i, j, k = position[index]
+            groups[value].append([i, j, k])
+        
+    
+    for i_group, group in enumerate(groups):
+        group_dir = os.path.join(dir, str(i_group))
+        if not os.path.exists(group_dir):
+            os.makedirs(group_dir)
+        else:
+            shutil.rmtree(group_dir)
+            os.makedirs(group_dir)
+
+        for item in group:
+            i = item[0]
+            w = item[1]
+            h = item[2]
+            x = Image.open(imgs[i][0]).resize((224,224))
+            x_tensor = transforms.ToTensor()(x).unsqueeze_(0) #shape (h, w)
+            img_patch = x_tensor[0, :, w*8:min(224,w*8+patchsize),h*8:min(224,h*8+patchsize)]
+            img_patch = transforms.ToPILImage()(img_patch)
+            img_patch.save(os.path.join(group_dir, '%s_%s_%s.png'%(str(imgs[i][0].split('/')[-1].split('.png')[0]),str(w),str(h))))
+            
+    return
 
 
 
