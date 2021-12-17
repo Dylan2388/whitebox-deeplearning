@@ -189,7 +189,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
     if not training:
         ### Load DBScan Model:
         model_name = "dbscan_4_0.70.json"
-        model_path = "/Users/dylan/Twente/Capita Selecta/project/clustering/model"
+        path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
         model = dbscan_load(os.path.join(model_path, model_name))
         ##### DECISION TREE CLASSIFIER
         embedded_vector = model["data"]
