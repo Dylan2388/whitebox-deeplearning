@@ -42,7 +42,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs[:10]
+    imgs = dataLoader.dataset.imgs[:100]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -124,13 +124,16 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             #### use 32-dimension as well
             #### use 16-dimension as well
             #### -->  
-            eps = 0.6
+            eps = 0.7
             start_time = time.time()
             cluster_model = dbscan(reshaped_img_enc, eps=eps)
             print("--- DBScan: %s seconds ---" % (time.time() - start_time))
-            model_name = "dbscan_" + str(skip_const) + "_" + str(eps) +".json"
+            model_name = "dbscan_core_" + str(skip_const) + "_" + str(eps) +".json"
+            core_sample_indices = cluster_model.core_sample_indices_
+            components = cluster_model.components_
             
-            result = dbscan_save(reshaped_img_enc, cluster_model.labels_, reshaped_img_enc_pos, imgs)
+            
+            result = dbscan_save(reshaped_img_enc, cluster_model.labels_, reshaped_img_enc_pos, imgs, core_sample_indices, components)
             path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
             if not os.path.exists(path):
                 os.makedirs(path)
@@ -300,15 +303,25 @@ def decision_tree(model, cluster_label, cluster_label_pos, imgs):
 
 ############################### DBSCAN prediction:
 
-
-
+### With 10 images, the higest matrix (float) will consume: 24(Bytes) * 360 * 1078920 * 128 /1024/1024/1024/1024 = 1.085(TB) in RAM.
+### With input of 10 test images
+### Input explanation:
+# data: embedded vector of train data from BagNet
+# label: label of embedded vector of training data from DBScan
+# input_vector: embedded vector of test data from BagNet
+# thres: 0.7
 def dbscan_prediction(data, label, input_vector, thres):
+    ## shape: (1078920, 128)
     compareMatrix = np.array(data)
+    ## shape: (360, 128)
     inputMatrix = np.array(input_vector)
+    ## shape: (360, 1078920, 128)
     z = compareMatrix - inputMatrix[:, None]
+    ## shape: (360, 1078920)
     distance = np.linalg.norm(z, axis=2)
     
     n = input_vector.shape[0]
+    # shape(360)
     min_array = np.min(distance, axis=1)
     pos_array = np.argmin(distance, axis=1)
     out_label = [-1] * n
@@ -340,14 +353,14 @@ def decision_tree_dbscan(label, position, imgs):
     return clf
 
 
-def dbscan_save(data, label, position, imgs):
+def dbscan_save(data, label, position, imgs, core_sample_indices, components):
     n = len(label)
     path = [None] * n
     c = 0
     for item in position:
         path[c] = imgs[item[0]][0]
         c = c + 1
-    result = {"label": label.tolist(), "data": data.tolist(), "position":position, "path": path}
+    result = {"label": label.tolist(), "data": data.tolist(), "position":position, "path": path, "core_sample_indices": core_sample_indices.tolist(), "components": components.tolist()}
     return result
 
 
