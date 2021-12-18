@@ -42,7 +42,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs[:100]
+    imgs = dataLoader.dataset.imgs
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -128,7 +128,8 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             start_time = time.time()
             cluster_model = dbscan(reshaped_img_enc, eps=eps)
             print("--- DBScan: %s seconds ---" % (time.time() - start_time))
-            model_name = "dbscan_core_" + str(skip_const) + "_" + str(eps) +".json"
+            model_name_json = "dbscan_core_" + str(skip_const) + "_" + str(eps) +".json"
+            model_name = "dbscan_core_" + str(skip_const) + "_" + str(eps) +".pkl"
             core_sample_indices = cluster_model.core_sample_indices_
             components = cluster_model.components_
             
@@ -137,8 +138,9 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
             if not os.path.exists(path):
                 os.makedirs(path)
-            with open(os.path.join(path,model_name), 'w') as f:
+            with open(os.path.join(path,model_name_json), 'w') as f:
                 json.dump(result, f)
+            save_model(cluster_model, os.path.join(path ,model_name))
         if clusterMethod == 4:
             eps = 0.7
             start_time = time.time()
