@@ -180,7 +180,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         
         ### Load Decision Tree Model
         start_time = time.time()
-        decision_model_name = "decision_tree_0.7.pkl"
+        decision_model_name = "decision_tree_0.6.pkl"
         clf = load_model(os.path.join(model_path, decision_model_name))
         
         ### Predict using decision tree
@@ -402,7 +402,7 @@ def outputing_train_image(label, position, imgs, dir, patchsize):
 
 def load_dbscan_json(model_path):
     #### Load DBScan Model:
-    model_name = "dbscan_core_4_0.7.json"
+    model_name = "dbscan_core_4_0.6.json"
     model = dbscan_load(os.path.join(model_path, model_name))
     ##### DECISION TREE CLASSIFIER
     embedded_vector = model["data"]
@@ -414,7 +414,7 @@ def load_dbscan_json(model_path):
 
 def load_dbscan_pickle(model_path):
     ### Load DBScan Model:
-    model_name = "dbscan_core_4_0.7.pkl"
+    model_name = "dbscan_core_4_0.6.pkl"
     model = load_model(os.path.join(model_path, model_name))
     ### Decision Tree CLASSIFIER
     embedded_vector = model.components_
