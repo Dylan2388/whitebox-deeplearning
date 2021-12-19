@@ -56,7 +56,7 @@ def save_model(model, path):
     sys.setrecursionlimit(50000)
     pickle.dump(model, open(path, 'wb'), pickle.HIGHEST_PROTOCOL)
 
-model_name = "dbscan_4_0.70.json"
+model_name = "dbscan_core_4_0.6.json"
 model_path = "/Users/dylan/Twente/Capita Selecta/project/clustering/model"
 model = dbscan_load(os.path.join(model_path, model_name))
 ##### DECISION TREE CLASSIFIER
@@ -66,7 +66,7 @@ position = model["position"]
 image_paths = model["path"]
 print("Start Decision Tree Classifier...", flush=True)
 decision_tree_model = decision_tree_dbscan(label, position, image_paths)
-model_name = "decision_tree.pkl"
+model_name = "decision_tree_0.6.pkl"
 ### SAVE DECISION TREE MODEL
 path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
 if not os.path.exists(path):

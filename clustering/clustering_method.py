@@ -42,7 +42,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs
+    imgs = dataLoader.dataset.imgs[:5000]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -99,25 +99,25 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
     if training:
         print("Finish encoding data. Start Training...", flush=True)
         #### shape [i*24*24]
-        if clusterMethod == 0:
-            start_time = time.time()
-            cluster_model = affinity_progapation(reshaped_img_enc)
-            print("--- Affinity Propagation: %s seconds ---" % (time.time() - start_time))
-            model_name = "affinity_progapation.pkl"
-        if clusterMethod == 1:
-            ### Decide number of K to clustering
-            ### Distance: 0.6
-            ### Loop for patches, if distance >.6, new cluster
+        # if clusterMethod == 0:
+        #     start_time = time.time()
+        #     cluster_model = affinity_progapation(reshaped_img_enc)
+        #     print("--- Affinity Propagation: %s seconds ---" % (time.time() - start_time))
+        #     model_name = "affinity_progapation.pkl"
+        # if clusterMethod == 1:
+        #     ### Decide number of K to clustering
+        #     ### Distance: 0.6
+        #     ### Loop for patches, if distance >.6, new cluster
             
-            start_time = time.time()
-            cluster_model = k_mean(reshaped_img_enc)
-            print("--- K-mean : %s seconds ---" % (time.time() - start_time))
-            model_name = "k_mean.pkl"
-        if clusterMethod == 2:
-            start_time = time.time()
-            cluster_model = mean_shift(reshaped_img_enc)
-            print("--- Mean Shift: %s seconds ---" % (time.time() - start_time))
-            model_name = "mean_shift.pkl"
+        #     start_time = time.time()
+        #     cluster_model = k_mean(reshaped_img_enc)
+        #     print("--- K-mean : %s seconds ---" % (time.time() - start_time))
+        #     model_name = "k_mean.pkl"
+        # if clusterMethod == 2:
+        #     start_time = time.time()
+        #     cluster_model = mean_shift(reshaped_img_enc)
+        #     print("--- Mean Shift: %s seconds ---" % (time.time() - start_time))
+        #     model_name = "mean_shift.pkl"
         if clusterMethod == 3:
             #### compute the mean of the cluster
             #### use 64-dimension as well
@@ -141,18 +141,18 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             with open(os.path.join(path,model_name_json), 'w') as f:
                 json.dump(result, f)
             save_model(cluster_model, os.path.join(path ,model_name))
-        if clusterMethod == 4:
-            eps = 0.7
-            start_time = time.time()
-            cluster_model = optics(reshaped_img_enc, eps=eps)
-            print("--- Optics: %s seconds ---" % (time.time() - start_time))
-            model_name = "optics.pkl"
-        if clusterMethod == 5:
-            # reshaped_img_enc = faiss_array(reshaped_img_enc, 128)
-            start_time = time.time()
-            cluster_model = birch(reshaped_img_enc, n_jobs=32)
-            print("--- BIRCH(1-core): %s seconds ---" % (time.time() - start_time))
-            model_name = "birch.pkl"
+        # if clusterMethod == 4:
+        #     eps = 0.7
+        #     start_time = time.time()
+        #     cluster_model = optics(reshaped_img_enc, eps=eps)
+        #     print("--- Optics: %s seconds ---" % (time.time() - start_time))
+        #     model_name = "optics.pkl"
+        # if clusterMethod == 5:
+        #     # reshaped_img_enc = faiss_array(reshaped_img_enc, 128)
+        #     start_time = time.time()
+        #     cluster_model = birch(reshaped_img_enc, n_jobs=32)
+        #     print("--- BIRCH(1-core): %s seconds ---" % (time.time() - start_time))
+        #     model_name = "birch.pkl"
         
         
         # path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
@@ -160,66 +160,41 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         #     os.makedirs(path)
         # save_model(cluster_model, os.path.join(path,model_name))
         # print("Finish training data.", flush=True)
-        
-    train_decision_tree = False
-    if train_decision_tree:
-        model_name = "dbscan_4_0.70.json"
-        model_path = "/Users/dylan/Twente/Capita Selecta/project/clustering/model"
-        model = dbscan_load(os.path.join(model_path, model_name))
-        ##### DECISION TREE CLASSIFIER
-        embedded_vector = model["data"]
-        label = model["label"]
-        position = model["position"]
-        image_paths = model["path"]
-        print("Start Decision Tree Classifier...", flush=True)
-        decision_tree_model = decision_tree_dbscan(label, position, image_paths)
-        model_name = "decision_tree.pkl"
-        ### SAVE DECISION TREE MODEL
-        path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
-        if not os.path.exists(path):
-            os.makedirs(path)
-        save_model(decision_tree_model, os.path.join(path,model_name))
-    
-
-    ###### Suitable Threshold: between 0.5->0.8
-    ###### Change clustering method: 
-    ###### Test with decision tree:
-
-
-
-    ####### NEXT WEEK: Search for efficient clustering method
-    ####### CONFIRM BAGNET WORKS OR NOT????????
 
     ############### Testing clustering model
     if not training:
-        ### Load DBScan Model:
-        model_name = "dbscan_4_0.70.json"
-        model_path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
-        model = dbscan_load(os.path.join(model_path, model_name))
-        ##### DECISION TREE CLASSIFIER
-        embedded_vector = model["data"]
-        train_label = model["label"]
-        position = model["position"]
-        image_paths = model["path"]
-        thres = float(model_name.split("_")[-1][:3])
         
+        model_path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
+        ##### LOAD DBSCAN MODEL USING JSON FILE
+        # embedded_vector, train_label, position, image_paths, thres = load_dbscan_json(model_path)
+        
+        ###### LOAD DBSCAN MODEL USING PICKLE FILE
+        start_time = time.time()
+        embedded_vector, train_label, thres = load_dbscan_pickle(model_path)
+        print("--- DBScan Load Model: %s seconds ---" % (time.time() - start_time))
         
         ### Predict DBScan label:
-        test_label = dbscan_prediction(embedded_vector, train_label, reshaped_img_enc, thres)
+        start_time = time.time()
+        test_label = batching_test_data(embedded_vector, train_label, reshaped_img_enc, thres)
+        print("--- DBScan Prediction: %s seconds ---" % (time.time() - start_time))
         
         ### Load Decision Tree Model
-        decision_model_name = "decision_tree.pkl"
+        start_time = time.time()
+        decision_model_name = "decision_tree_0.6.pkl"
         clf = load_model(os.path.join(model_path, decision_model_name))
         
         ### Predict using decision tree
-        real_y = [ img.split("/")[-2] for img in imgs ]
-        x = decision_tree_table(test_label, reshaped_img_enc_pos, real_y)
+        real_y = [ img[0].split("/")[-2] for img in imgs ]
+        feature = clf.n_features_in_
+        x = decision_tree_test_table(feature, test_label, reshaped_img_enc_pos, real_y)
         pred = clf.predict(x)
-        score = clf.score(x)
+        score = clf.score(x, real_y)
+        print("--- Decision Tree Prediction: %s seconds ---" % (time.time() - start_time))
         print("Prediction:", flush=True)
         print(pred, flush=True)
         print("Score: ", flush=True)
         print(score, flush=True)
+
         
         
         
@@ -264,43 +239,39 @@ def load_model(path):
 
 ####### Fit training
 ####### Fit predict
-def affinity_progapation(input, **kwargs):
-    model = AffinityPropagation(random_state=5).fit(input)
-    return model
+# def affinity_progapation(input, **kwargs):
+#     model = AffinityPropagation(random_state=5).fit(input)
+#     return model
 
-def k_mean(input, **kwargs):
-    model = KMeans(n_clusters=9, random_state=0).fit(input)
-    return model
+# def k_mean(input, **kwargs):
+#     model = KMeans(n_clusters=9, random_state=0).fit(input)
+#     return model
 
-def mean_shift(input, **kwargs):
-    model = MeanShift().fit(input)
-    return model
+# def mean_shift(input, **kwargs):
+#     model = MeanShift().fit(input)
+#     return model
 
-def dbscan(input, eps, **kwargs):
-    model = DBSCAN(eps=eps).fit(input)
-    return model
+# def optics(input, eps, **kwargs):
+#     output = OPTICS(min_samples=10, max_eps=eps, metric="euclidean", cluster_method="xi").fit(input)
+#     return output
 
-def optics(input, eps, **kwargs):
-    output = OPTICS(min_samples=10, max_eps=eps, metric="euclidean", cluster_method="xi").fit(input)
-    return output
+# def birch(input, **kwargs):
+#     model = Birch(n_clusters=None).fit(input)
+#     return model
 
-def birch(input, **kwargs):
-    model = Birch(n_clusters=None).fit(input)
-    return model
-
-def decision_tree(model, cluster_label, cluster_label_pos, imgs):
-    ### Birch Model
-    unique, count = np.unique(model.labels_, return_counts=True)
-    d = len(unique)
-    n = len(imgs)
-    x = np.zeros((n, d))
-    y = imgs
-    for c in range(len(cluster_label)):
-        i, _, _ = cluster_label_pos[c]
-        j = cluster_label[c]
-        x[i, j] = 1
-    clf = DecisionTreeClassifier(random_state=0).fit(x, y)
-    return clf
+# def decision_tree(model, cluster_label, cluster_label_pos, imgs):
+#     ### Birch Model
+#     unique, count = np.unique(model.labels_, return_counts=True)
+#     d = len(unique)
+#     n = len(imgs)
+#     x = np.zeros((n, d))
+#     y = imgs
+#     for c in range(len(cluster_label)):
+#         i, _, _ = cluster_label_pos[c]
+#         j = cluster_label[c]
+#         x[i, j] = 1
+#     clf = DecisionTreeClassifier(random_state=0).fit(x, y)
+#     return clf
 
 
 ############################### DBSCAN prediction:
@@ -312,18 +283,30 @@ def decision_tree(model, cluster_label, cluster_label_pos, imgs):
 # label: label of embedded vector of training data from DBScan
 # input_vector: embedded vector of test data from BagNet
 # thres: 0.7
+
+def batching_test_data(data, label, input_vector, thres):
+    n = 72
+    k = int(input_vector.shape[0]/n)
+    test_label = []
+    for i in range(k):
+        input = input_vector[i*n: (i+1)*n, :]
+        out_label = dbscan_prediction(data, label, input, thres)
+        test_label.extend(out_label)
+    return test_label
+        
+
 def dbscan_prediction(data, label, input_vector, thres):
-    ## shape: (1078920, 128)
+    ## shape: (700000, 128)
     compareMatrix = np.array(data)
-    ## shape: (360, 128)
+    ## shape: (36, 128)
     inputMatrix = np.array(input_vector)
-    ## shape: (360, 1078920, 128)
+    ## shape: (36, 700000, 128)
     z = compareMatrix - inputMatrix[:, None]
-    ## shape: (360, 1078920)
+    ## shape: (36, 700000)
     distance = np.linalg.norm(z, axis=2)
     
     n = input_vector.shape[0]
-    # shape(360)
+    # shape(36)
     min_array = np.min(distance, axis=1)
     pos_array = np.argmin(distance, axis=1)
     out_label = [-1] * n
@@ -335,6 +318,20 @@ def dbscan_prediction(data, label, input_vector, thres):
             out_label[i] = -1
     return out_label
 
+
+def dbscan(input, eps, **kwargs):
+    model = DBSCAN(eps=eps).fit(input)
+    return model
+
+def decision_tree_test_table(feature, label, position, imgs):
+    d = feature
+    n = len(imgs)
+    x = np.zeros((n, d))
+    for c in range(len(label)):
+        i, _, _ = position[c]
+        j = label[c]
+        x[i, j] = 1
+    return x
 
 def decision_tree_table(label, position, imgs):
     d = max(label)+2
@@ -400,6 +397,33 @@ def outputing_train_image(label, position, imgs, dir, patchsize):
             img_patch.save(os.path.join(group_dir, '%s_%s_%s.png'%(str(imgs[i][0].split('/')[-1].split('.png')[0]),str(w),str(h))))
             
     return
+
+
+def load_dbscan_json(model_path):
+    #### Load DBScan Model:
+    model_name = "dbscan_core_4_0.6.json"
+    model = dbscan_load(os.path.join(model_path, model_name))
+    ##### DECISION TREE CLASSIFIER
+    embedded_vector = model["data"]
+    train_label = model["label"]
+    position = model["position"]
+    image_paths = model["path"]
+    thres = float(model_name.split("_")[-1][:3])
+    return embedded_vector, train_label, position, image_paths, thres
+
+def load_dbscan_pickle(model_path):
+    ### Load DBScan Model:
+    model_name = "dbscan_core_4_0.6.pkl"
+    model = load_model(os.path.join(model_path, model_name))
+    ### Decision Tree CLASSIFIER
+    embedded_vector = model.components_
+    train_label = model.labels_
+    sample_indice = model.core_sample_indices_
+    train_label = train_label[sample_indice]
+    thres = float(model_name.split("_")[-1][:3])
+    return embedded_vector, train_label, thres
+    
+    
 
 
 
