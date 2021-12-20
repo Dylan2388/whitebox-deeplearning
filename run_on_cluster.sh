@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -c 16
+#SBATCH -c 8
 
 
 
