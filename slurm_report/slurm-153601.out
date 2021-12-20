@@ -1,0 +1,38 @@
+Log dir:  ./runs/run_bagnet
+Num classes (k) =  200
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder128.pth.
+--- DBScan Load Model: 0.7089278697967529 seconds ---
+--- DBScan Prediction: 4086.7965335845947 seconds ---
+--- Decision Tree Prediction: 0.01904153823852539 seconds ---
+Prediction:
+['099.Ovenbird' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '007.Parakeet_Auklet' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '007.Parakeet_Auklet' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '007.Parakeet_Auklet' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '007.Parakeet_Auklet' '099.Ovenbird' '099.Ovenbird'
+ '007.Parakeet_Auklet' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '008.Rhinoceros_Auklet' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '008.Rhinoceros_Auklet' '008.Rhinoceros_Auklet' '099.Ovenbird'
+ '008.Rhinoceros_Auklet' '083.White_breasted_Kingfisher' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '008.Rhinoceros_Auklet' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '008.Rhinoceros_Auklet' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '008.Rhinoceros_Auklet' '099.Ovenbird'
+ '008.Rhinoceros_Auklet' '099.Ovenbird' '099.Ovenbird'
+ '008.Rhinoceros_Auklet' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '008.Rhinoceros_Auklet'
+ '008.Rhinoceros_Auklet' '091.Mockingbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '137.Cliff_Swallow' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '008.Rhinoceros_Auklet' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird']
+Real Class:
+['007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet', '008.Rhinoceros_Auklet']
+Score: 
+0.17
