@@ -298,6 +298,8 @@ def batching_test_data(data, label, input_vector, thres):
         start = i*n
         if i == k-1:
             stop = max_len
+        else:
+            stop = (i+1)*n
         input = input_vector[start:stop, :]
         out_label = dbscan_prediction(data, label, input, thres)
         test_label.extend(out_label)
