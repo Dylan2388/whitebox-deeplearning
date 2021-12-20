@@ -1,6 +1,7 @@
 Log dir:  ./runs/run_bagnet
 Num classes (k) =  200
 Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder128.pth.
+DBSCAN 1000 image (5000-6000): 0.7 eps
 --- DBScan Load Model: 1.0152432918548584 seconds ---
 --- DBScan Prediction: 53852.87950062752 seconds ---
 --- Decision Tree Prediction: 0.1234886646270752 seconds ---

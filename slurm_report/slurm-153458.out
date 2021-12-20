@@ -1,3 +1,0 @@
-Log dir:  ./runs/run_bagnet
-Num classes (k) =  200
-/tmp/slurmd/job153458/slurm_script: line 7: 4131044 Killed                  python main.py

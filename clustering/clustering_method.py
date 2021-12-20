@@ -42,7 +42,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs[5000:6000]
+    imgs = dataLoader.dataset.imgs[1000:1100]
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -192,6 +192,8 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         print("--- Decision Tree Prediction: %s seconds ---" % (time.time() - start_time))
         print("Prediction:", flush=True)
         print(pred, flush=True)
+        print("Real Class:", flush=True)
+        print(real_y, flush=True)
         print("Score: ", flush=True)
         print(score, flush=True)
 
