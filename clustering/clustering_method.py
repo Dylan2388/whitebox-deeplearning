@@ -42,7 +42,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         os.makedirs(dir)
 
     ###### set up images
-    imgs = dataLoader.dataset.imgs[1000:1010]
+    imgs = dataLoader.dataset.imgs
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     normalize = transforms.Normalize(mean=mean,std=std)
@@ -124,7 +124,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             #### use 32-dimension as well
             #### use 16-dimension as well
             #### -->  
-            eps = 0.6
+            eps = 0.54
             start_time = time.time()
             cluster_model = dbscan(reshaped_img_enc, eps=eps)
             print("--- DBScan: %s seconds ---" % (time.time() - start_time))
@@ -166,14 +166,14 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
         
         model_path = os.path.join(os.path.abspath(os.getcwd()), "clustering/model/")
         ##### LOAD DBSCAN MODEL USING JSON FILE
-        start_time = time.time()
-        embedded_vector, train_label, position, image_paths, thres = load_dbscan_json(model_path)
-        print("--- DBScan Load Model: %s seconds ---" % (time.time() - start_time))
+        # start_time = time.time()
+        # embedded_vector, train_label, position, image_paths, thres = load_dbscan_json(model_path)
+        # print("--- DBScan Load Model: %s seconds ---" % (time.time() - start_time))
         
         ###### LOAD DBSCAN MODEL USING PICKLE FILE
-        # start_time = time.time()
-        # embedded_vector, train_label, thres = load_dbscan_pickle(model_path)
-        # print("--- DBScan Load Model: %s seconds ---" % (time.time() - start_time))
+        start_time = time.time()
+        embedded_vector, train_label, thres = load_dbscan_pickle(model_path)
+        print("--- DBScan Load Model: %s seconds ---" % (time.time() - start_time))
         
         ### Predict DBScan label:
         start_time = time.time()
@@ -289,8 +289,8 @@ def load_model(path):
 # thres: 0.7
 
 def batching_test_data(data, label, input_vector, thres):
-    #### n: batching number
-    n = 72
+    #### n: batching size (image)
+    n = 2 ## 2 images
     k = int(input_vector.shape[0]/n)
     max_len = input_vector.shape[0]
     test_label = []

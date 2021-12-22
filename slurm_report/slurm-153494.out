@@ -2,4 +2,5 @@ Log dir:  ./runs/run_bagnet
 Num classes (k) =  200
 Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder128.pth.
 Finish encoding data. Start Training...
+Skip constant: 4
 --- DBScan: 23560.220257520676 seconds ---

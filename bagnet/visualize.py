@@ -6,7 +6,7 @@ import torchvision.transforms as transforms
 import torch.nn.functional as F
 from PIL import Image
 
-def show_triplets(model, test_loader: DataLoader, foldername: str, device, use_cosine: bool, args: argparse.Namespace):
+def show_triplets(model, dataloader: DataLoader, foldername: str, device, use_cosine: bool, args: argparse.Namespace):
     # TODO make for other networks where step size != 8
     modelname = args.net
 
@@ -25,14 +25,14 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, use_c
     
     with torch.no_grad():
         # Get a batch of data
-        xs, ys = next(iter(test_loader))
-        a = test_loader.dataset
+        xs, ys = next(iter(dataloader))
+        a = dataloader.dataset
         xs, ys = xs.to(device), ys.to(device)
         
         # Perform a forward pass through the network
         img_enc = model.forward(xs)
 
-        for p in range(50):
+        for p in range(200):
             near_imgs_dir = os.path.join(dir, str(p))
             if not os.path.exists(near_imgs_dir):
                 os.makedirs(near_imgs_dir)
@@ -43,7 +43,7 @@ def show_triplets(model, test_loader: DataLoader, foldername: str, device, use_c
             if p >= img_enc.shape[0]:
                 p = p - img_enc.shape[0]
             
-            nearest_patches = find_similar(img_enc[p,:,selection[0],selection[1]].unsqueeze_(1).unsqueeze_(2), model, test_loader, device, args, use_cosine)
+            nearest_patches = find_similar(img_enc[p,:,selection[0],selection[1]].unsqueeze_(1).unsqueeze_(2), model, dataloader, device, args, use_cosine)
             
             for (pn, patch_idx, similarity) in nearest_patches:
                 x = Image.open(pn).resize((224,224)) #TODO make non hard coded

@@ -38,7 +38,7 @@ def get_dataloaders(args: argparse.Namespace):
     cuda = not args.disable_cuda and torch.cuda.is_available()
     trainloader = torch.utils.data.DataLoader(trainset,
                                               batch_size=args.batch_size,
-                                              shuffle=True,
+                                              shuffle=False,
                                               pin_memory=cuda
                                               )
     projectloader = torch.utils.data.DataLoader(projectset,
