@@ -124,7 +124,7 @@ def clustering(model, input_channel, dataLoader: DataLoader, foldername: str, de
             #### use 32-dimension as well
             #### use 16-dimension as well
             #### -->  
-            eps = 0.48
+            eps = 0.46
             start_time = time.time()
             cluster_model = dbscan(reshaped_img_enc, eps=eps)
             print("--- DBScan: %s seconds ---" % (time.time() - start_time))
