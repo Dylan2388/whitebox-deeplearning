@@ -1,0 +1,14 @@
+Log dir:  ./runs/run_bagnet
+Num classes (k) =  200
+Model loaded from /home/s2845016/projects/whitebox-deeplearning/bagnet/model/bagnet33_encoder128.pth.
+--- DBScan Load Model: 264.3252429962158 seconds ---
+--- DBScan Prediction: 975.2174339294434 seconds ---
+--- Decision Tree Prediction: 0.09984350204467773 seconds ---
+Prediction:
+['099.Ovenbird' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird' '099.Ovenbird' '099.Ovenbird'
+ '099.Ovenbird' '099.Ovenbird']
+Real Class:
+['007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet', '007.Parakeet_Auklet']
+Score: 
+0.0
